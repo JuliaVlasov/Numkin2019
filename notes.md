@@ -1,3 +1,23 @@
+# Who am I ?
+
+ - My name is *Pierre Navaro*
+ - **Fortran 77 + PVM** : during my PhD 1998-2002 (Université du Havre) 
+ - **Fortran 90-2003 + OpenMP-MPI** : Engineer in Strasbourg (2003-2015) 
+ - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now)
+ - **Julia v1.0** since July 2018 
+
+ # Advection equation for a rotation in two dimensional domain
+
+ $$
+ \frac{d f}{dt} +  (y \frac{d f}{dx} - x \frac{d f}{dy}) = 0
+ $$
+
+ $$ 
+ x \in [-\pi, \pi],\qquad y \in [-\pi, \pi] \qquad \mbox{ and } \qquad t \in [0, 200\pi] 
+ $$
+
+# ---
+
 # Introduction
 
 High-level languages like Python and R let one explore and experiment rapidly, but can run slow. They also provide a large choice of packages and it is easy to share your work without care of dependencies. With thess langages, end-users have 
