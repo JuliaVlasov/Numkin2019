@@ -7,14 +7,18 @@
 #       extension: .jl
 #       format_name: light
 #       format_version: '1.4'
-#       jupytext_version: 1.1.6
+#       jupytext_version: 1.2.4
 #   kernelspec:
-#     display_name: Julia 1.1.1
+#     display_name: Julia 1.2.0
 #     language: julia
-#     name: julia-1.1
+#     name: julia-1.2
 # ---
 
 using Plots, BenchmarkTools, FFTW, LinearAlgebra
+
+# ![](rotation2d.gif)
+
+
 
 struct Mesh
     
@@ -60,10 +64,10 @@ function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     for n = 1:nt
         
         fft!(f, 2)
-        f .= exky .* f
+        f .= exky .* f  # 
         ifft!(f,2)
         
-        fft!(f, 1)
+        fft!(f, 1)  
         f .= ekxy .* f
         ifft!(f, 1)
         
@@ -135,5 +139,12 @@ end
 nt, tf = 100, 20.
 rotation_on_gpu(mesh, 1, 0.1)
 @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+
+A = rand(1024,1024)
+B = rand(1024,1024)
+C = A + B
+@time C = C - A*B
+
+@time BLAS.gemm!('N', 'N', -1.,A,B,1.,C)
 
 
