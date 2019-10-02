@@ -16,9 +16,17 @@
 
 using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
+# # Advection equation for a rotation in two dimensional domain
+#
+#  $$
+#  \frac{d f}{dt} +  (y \frac{d f}{dx} - x \frac{d f}{dy}) = 0
+#  $$
+#
+#  $$
+#  x \in [-\pi, \pi],\qquad y \in [-\pi, \pi] \qquad \mbox{ and } \qquad t \in [0, 200\pi]
+#  $$
+
 # ![](rotation2d.gif)
-
-
 
 struct Mesh
     
