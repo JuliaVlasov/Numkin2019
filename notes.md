@@ -50,12 +50,14 @@ You develop in the same language in which you optimize.
 - Julia 3173 registered packages
 - It grows fast because it is very easy to create a package (easier than R and Python)
 - It is very easy to use GPU device.
-- The syntax for Linear Algebra is 
+- Nice interface for Linear Algebra and Differential Equations
+- Easy access to BLAS and LAPACK
 
 # Cons
 - Julia is fast but it is not faster than Fortran. OpenMP is much better than 
 the multithreading 
-- There is a MPI and PETSc package but they are not very active. The Julia community seems to prefer the ditributed processing approach they like to use in Data science.
+- There is a MPI and PETSc package but they are not very active. The Julia community seems to prefer the ditributed processing approach. 
+Like in Python community There has been an orientation towards data science in recent years. HPC is no longer in fashion and now all the latest developments are about machine learning and cloud computing.
 - Plotting takes time (20 seconds for the first plot)
 - Does not work well with vectorized code, you need to do a lot of inplace computation
 to avoid memory allocations and use explicit views to avoid copy.
