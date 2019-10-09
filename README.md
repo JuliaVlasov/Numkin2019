@@ -23,6 +23,9 @@ julia --project
 ```julia
 julia> using Pkg
 julia> Pkg.instantiate()
+julia> using Conda
+julia> Conda.add("jupytext", channel="conda-forge")
+julia> Conda.add("r-plot3d", channel="conda-forge")
 julia> using IJulia
 julia> notebook(dir=pwd())
 [ Info: running ...
