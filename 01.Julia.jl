@@ -95,3 +95,6 @@ u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
+# -
+
+
