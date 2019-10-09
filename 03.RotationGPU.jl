@@ -16,7 +16,7 @@
 
 using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
-# # Advection equation for a rotation in two dimensional domain
+# ### Advection equation for a rotation in two dimensional domain
 #
 #  $$
 #  \frac{d f}{dt} +  (y \frac{d f}{dx} - x \frac{d f}{dy}) = 0
@@ -147,12 +147,3 @@ end
 nt, tf = 100, 20.
 rotation_on_gpu(mesh, 1, 0.1)
 @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
-
-A = rand(1024,1024)
-B = rand(1024,1024)
-C = A + B
-@time C = C - A*B
-
-@time BLAS.gemm!('N', 'N', -1.,A,B,1.,C)
-
-
