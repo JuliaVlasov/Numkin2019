@@ -85,3 +85,20 @@ end
 # - Plotting takes time (20 seconds for the first plot)
 # - Does not work well with vectorized code, you need to do a lot of inplace computation to avoid memory allocations and use explicit views to avoid copy.
 # - Optimizing Julia code is often done at the expense of transparency. 
+
+# # Julia is a language made for Science.
+#
+#  http://www.stochasticlifestyle.com/some-state-of-the-art-packages-in-julia-v1-0
+#
+#  * JuliaDiff – Differentiation tools
+#  * JuliaDiffEq – Differential equation solving and analysis
+#  * JuliaGeometry – Computational Geometry
+#  * JuliaGraphs – Graph Theory and Implementation
+#  * JuliaIntervals - Rigorous numerics with interval arithmetic & applications
+#  * JuliaMath – Mathematics made easy in Julia
+#  * JuliaOpt – Optimization
+#  * JuliaPolyhedra – Polyhedral computation
+#  * JuliaSparse – Sparse matrix solvers
+#  * JuliaStats – Statistics and Machine Learning
+#  * JuliaPlots - powerful convenience for visualization
+#
