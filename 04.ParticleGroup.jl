@@ -111,7 +111,7 @@ end
 
 # +
 """
-    landau_smapling!( pg, α, kx)
+    landau_sampling!( pg, α, kx)
 
 Sampling from a probability distribution to initialize
 a Landau damping
@@ -181,7 +181,5 @@ plot!(p[3,1], v-> exp( - v^2 / 2) * 4 / π^2 , -6, 6, lab="")
 # -
 
 histogram2d(vp[:,1], vp[:,2], normalize=true, bins=100)
-
-using RCall
 
 
