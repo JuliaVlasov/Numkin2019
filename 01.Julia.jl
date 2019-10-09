@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+# # Who am I ?
+#
+#  - My name is *Pierre Navaro*
+#  - **Fortran 77 + PVM** : during my PhD 1998-2002 (Université du Havre) 
+#  - **Fortran 90-2003 + OpenMP-MPI** : Engineer in Strasbourg (2003-2015) at IRMA
+#  - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now) at IRMAR
+#  - **Julia v1.0** since July 2018 
+
 #
 # # Why Julia?
 #
@@ -14,7 +23,7 @@
 # - All functions are JIT compiled via LLVM (interactive lags but massive runtime improvements)
 # - All functions specialize on types of arguments (more compilation but give generic programming structures)
 # - Julia is interactive (use it like Python and R, but makes it harder to get binaries)
-# - Julia has great methods for handling mutation (more optimization oppotunities like C/Fortran, but more cognative burden)
+# - Julia has great methods for handling mutation (more optimization opportunities like C/Fortran, but more cognative burden)
 # - Julia's Base library and most packages are written in Julia, (you can understand the source, but learn a new package)
 # - Julia has expensive tooling for code generation and metaprogramming (consise and more optimizations, but some codes can be for experienced users)
 #
@@ -55,29 +64,51 @@
 # http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html
 
 # +
-using DifferentialEquations, Measurements, Plots
+using DifferentialEquations, Plots
 
-g = 9.79 ± 0.02; # Gravitational constants
-L = 1.00 ± 0.01; # Length of the pendulum
+g = 9.79 # Gravitational constants
+L = 1.00 # Length of the pendulum
 
 #Initial Conditions
-u₀ = [0 ± 0, π / 60 ± 0.01] # Initial speed and initial angle
+u₀ = [0, π / 60] # Initial speed and initial angle
 tspan = (0.0, 6.3)
 
 #Define the problem
 function simplependulum(du, u, p, t)
-    θ  = u[1]
-    dθ = u[2]
-    du[1] = dθ
-    du[2] = -(g/L)*θ
+    θ, dθ  = u
+    du     = dθ, -(g/L)*θ
 end
 
 #Pass to solvers
 prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6)
 
+# +
 # Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
+
+# +
+using Measurements
+
+g = 9.79 ± 0.02; # Gravitational constants
+L = 1.00 ± 0.01; # Length of the pendulum
+
+#Initial Conditions
+u₀ = [0 ± 0, π / 60 ± 0.01] # Initial speed and initial angle
+
+#Pass to solvers
+prob = ODEProblem(simplependulum, u₀, tspan)
+sol = solve(prob, Tsit5(), reltol = 1e-6)
+
+# +
+# Analytic solution
+u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
+
+plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
+plot!(sol.t, u, label = "Analytic")
+# -
+
+
