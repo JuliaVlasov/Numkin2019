@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # # Who am I ?
 #
 #  - My name is *Pierre Navaro*
@@ -6,6 +5,8 @@
 #  - **Fortran 90-2003 + OpenMP-MPI** : Engineer in Strasbourg (2003-2015) at IRMA
 #  - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now) at IRMAR
 #  - **Julia v1.0** since July 2018 
+
+# --
 
 #
 # # Why Julia?
@@ -16,6 +17,8 @@
 # - This is sometimes called the "two language problem" and is something the Julia developers set out to eliminate. 
 # - Julia's promise is to provide a "best of both worlds" experience for programmers who need to develop novel algorithms and bring them into production environments with minimal effort.
 #
+
+# ---
 
 # # Julia's Engineering and Design Tradoffs
 #
@@ -29,7 +32,9 @@
 #
 # To me, this gives me a language with a lot of depth which works well for computationally-expensive scientific applications.
 #
-# [ChrisRackaukas slide](https://www.youtube.com/watch?v=zJ3R6vOhibA&feature=em-uploademail) 
+# [© ChrisRackaukas](https://www.youtube.com/watch?v=zJ3R6vOhibA&feature=em-uploademail) 
+
+# ---
 
 # # Type-Dispatch Programming
 #
@@ -39,7 +44,8 @@
 #
 # [JuliaCon 2019 | The Unreasonable Effectiveness of Multiple Dispatch | Stefan Karpinski](https://youtu.be/kc9HwsxE1OY)
 
-# +
+# ---
+
 using DifferentialEquations, Plots
 
 g = 9.79 # Gravitational constants
@@ -61,14 +67,21 @@ end
 prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6);
 
-# +
+# ---
+
 # Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 scatter!(sol.t, u, label = "Analytic")
+savefig("pendulum1.svg")
 
-# +
+# ![](pendulum1.svg)
+
+# ---
+
+# [Numbers with Uncertainties](http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html)
+
 using Measurements
 
 g = 9.79 ± 0.02; # Gravitational constants
@@ -89,12 +102,14 @@ end
 prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6);
 
-# +
+# ---
+
 # Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
-# -
+savefig("pendulum2.svg"); 
 
 
+# ![](pendulum2.svg)
