@@ -23,6 +23,7 @@ julia --project
 ```julia
 julia> using Pkg
 julia> Pkg.instantiate()
+julia> Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
 julia> using IJulia
 julia> notebook(dir=pwd())
 [ Info: running ...
