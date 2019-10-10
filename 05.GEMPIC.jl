@@ -3,47 +3,70 @@
 # Geometric ElectroMagnetic Particle-In-Cell Methods
 #
 # https://arxiv.org/abs/1609.03053
+#
+# Michael Kraus, Katharina Kormann, Philip J. Morrison, Eric Sonnendrücker
+#
+# Framework for Finite Element Particle-in-Cell methods based on 
+# the discretization of the underlying Hamiltonian structure of the 
+# Vlasov-Maxwell system. 
 
-using Pkg
-Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
+# ```julia
+# using Pkg
+# Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
+# ```
 
 using ProgressMeter, Plots, GEMPIC
 
-# ---
+#---
 
 # # Strong Landau Damping
-#
-# Electrostatic example of strong Landau damping
-# $$
-# f(x,v) =\frac{1}{2\pi\sigma^2}  \exp 
-# \Big( - \frac{v_1^2 + v_2^2}{2\sigma^2} \Big)
-# ( 1+\alpha \cos(k x)􏰁),
-# $$
 #
 # The physical parameters 
 
 kx, α = 0.5, 0.5
 xmin, xmax = 0, 2π/kx
 domain = [xmin, xmax, xmax - xmin]
+
+# --
+
+# The numerical parameters
+
 ∆t = 0.05
 nx = 32 
 n_particles = 100000
 mesh = Mesh( xmin, xmax, nx)
 spline_degree = 3
 
+# --
+
+# Initialize particles
+
 mass, charge = 1.0, 1.0
 particle_group = ParticleGroup{1,2}( n_particles, mass, charge, 1)   
 sampler = LandauDamping( α, kx)
 
-# ---
-
 sample!(sampler, particle_group)
 
-kernel_smoother1 = ParticleMeshCoupling( domain, [nx], n_particles, spline_degree-1, :galerkin)    
-kernel_smoother0 = ParticleMeshCoupling( domain, [nx], n_particles, spline_degree, :galerkin)
+# ---
+
+# Particle-mesh coupling operators
+
+kernel_smoother1 = ParticleMeshCoupling( domain, [nx], n_particles, 
+                                         spline_degree-1, :galerkin)    
+
+kernel_smoother0 = ParticleMeshCoupling( domain, [nx], n_particles, 
+                                         spline_degree, :galerkin)
+# Allocate electrostatic fields
+
 rho = zeros(Float64, nx)
-ex  = zeros(Float64, nx)
+ex  = zeros(Float64, nx);
+
+# Maxwell solver
+
 maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
+
+# Set initial electric field from ρ
+
 solve_poisson!( ex, particle_group, 
                 kernel_smoother0, maxwell_solver, rho)
 
@@ -54,7 +77,7 @@ solve_poisson!( ex, particle_group,
 xg = LinRange(xmin, xmax, nx)
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, rho)
 plot( xg, sval, label="ρ")
-savefig("rho.svg") #src
+savefig("rho.svg")
 
 # ![](rho.svg)
 
@@ -69,6 +92,9 @@ maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 solve_poisson!( efield_poisson, particle_group, kernel_smoother0, maxwell_solver, rho )
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
 plot( xg, sval )       
+savefig("ex.svg")
+
+# ![](ex.svg)
 
 # ---
 
@@ -97,10 +123,10 @@ steps, Δt = 100, 0.05
 
 @showprogress 1 for j = 1:steps # loop over time
 
-    # Strang splitting
+    ## Strang splitting
     strang_splitting!(propagator, Δt, 1)
 
-    # Diagnostics
+    ## Diagnostics
     solve_poisson!( efield_poisson, particle_group, 
                     kernel_smoother0, maxwell_solver, rho)
     
@@ -112,12 +138,13 @@ end
 
 # ---
 
-# ## Diagnostics ar stored in a dataframe
+# ## Diagnostics stored in a dataframe
 
 using DataFrames
-first(thdiag.data, 10)
+first(thdiag.data, 5)
+#-
 
 plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
-savefig("thdiag.svg") #src
+savefig("thdiag.svg")
 
 # ![](thdiag.svg)
