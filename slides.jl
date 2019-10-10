@@ -1,6 +1,5 @@
 import Remark
 
-
 slides_dir = "slides"
 mkpath(slides_dir)
 
