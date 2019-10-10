@@ -10,6 +10,7 @@
 # the discretization of the underlying Hamiltonian structure of the 
 # Vlasov-Maxwell system. 
 
+# To run the following install the GEMPIC package
 # ```julia
 # using Pkg
 # Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
@@ -17,7 +18,7 @@
 
 using ProgressMeter, Plots, GEMPIC
 
-#---
+# ---
 
 # # Strong Landau Damping
 #
@@ -37,7 +38,7 @@ n_particles = 100000
 mesh = Mesh( xmin, xmax, nx)
 spline_degree = 3
 
-# --
+# ---
 
 # Initialize particles
 
@@ -47,7 +48,7 @@ sampler = LandauDamping( α, kx)
 
 sample!(sampler, particle_group)
 
-# ---
+# --
 
 # Particle-mesh coupling operators
 
@@ -56,23 +57,17 @@ kernel_smoother1 = ParticleMeshCoupling( domain, [nx], n_particles,
 
 kernel_smoother0 = ParticleMeshCoupling( domain, [nx], n_particles, 
                                          spline_degree, :galerkin)
-# Allocate electrostatic fields
+
+# Allocate electrostatic fields and Maxwell solver
 
 rho = zeros(Float64, nx)
-ex  = zeros(Float64, nx);
-
-# Maxwell solver
+efield_poisson = zeros(Float64, nx)
 
 maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 
-# Set initial electric field from ρ
-
-solve_poisson!( ex, particle_group, 
-                kernel_smoother0, maxwell_solver, rho)
-
 # ---
 
-# ### Charge density ρ(x)
+# ### Charge density
 
 xg = LinRange(xmin, xmax, nx)
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, rho)
@@ -83,13 +78,11 @@ savefig("rho.svg")
 
 # ---
 
-# ### Electric field e(x)
+# ### Electric field 
 
-efield_poisson = zeros(Float64, nx)
-# Init!ialize the field solver
-maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
-# efield by Poisson
-solve_poisson!( efield_poisson, particle_group, kernel_smoother0, maxwell_solver, rho )
+solve_poisson!( efield_poisson, particle_group, 
+                kernel_smoother0, maxwell_solver, rho)
+
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
 plot( xg, sval )       
 savefig("ex.svg")
@@ -99,7 +92,7 @@ savefig("ex.svg")
 # ---
 
 # Initialize the arrays for the spline coefficients of the fields
-efield_dofs = [efield_poisson, zeros(Float64, nx)]
+efield_dofs = [copy(efield_poisson), zeros(Float64, nx)]
 bfield_dofs = zeros(Float64, nx)
     
 propagator = HamiltonianSplitting( maxwell_solver,
@@ -142,9 +135,12 @@ end
 
 using DataFrames
 first(thdiag.data, 5)
-#-
 
-plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
+# ---
+
+using Gadfly
+
+plot(thdiag.dat, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
 savefig("thdiag.svg")
 
 # ![](thdiag.svg)
