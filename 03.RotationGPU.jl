@@ -1,18 +1,6 @@
-# -*- coding: utf-8 -*-
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,jl:light
-#     text_representation:
-#       extension: .jl
-#       format_name: light
-#       format_version: '1.4'
-#       jupytext_version: 1.2.4
-#   kernelspec:
-#     display_name: Julia 1.2.0
-#     language: julia
-#     name: julia-1.2
-# ---
+# ## GPU Computing
+
+# https://github.com/JuliaGPU
 
 using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
@@ -25,8 +13,10 @@ using Plots, BenchmarkTools, FFTW, LinearAlgebra
 #  $$
 #  x \in [-\pi, \pi],\qquad y \in [-\pi, \pi] \qquad \mbox{ and } \qquad t \in [0, 200\pi]
 #  $$
-
+include(joinpath("$@__DIR__", "rotation2d_movie.jl"))
 # ![](rotation2d.gif)
+
+# ---
 
 struct Mesh
     
@@ -46,6 +36,8 @@ struct Mesh
     end
 end
 
+# ---
+
 function exact(time, mesh :: Mesh; shift=1.0)
    
     f = zeros(Float64,(mesh.nx, mesh.ny))
@@ -58,7 +50,8 @@ function exact(time, mesh :: Mesh; shift=1.0)
     f
 end
 
-# +
+# ---
+
 function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64) 
     
     dt = tf / nt
@@ -72,7 +65,7 @@ function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     for n = 1:nt
         
         fft!(f, 2)
-        f .= exky .* f  # 
+        f .= exky .* f 
         ifft!(f,2)
         
         fft!(f, 1)  
@@ -88,20 +81,22 @@ function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     real(f)
     
 end
-# -
+
+# ---
 
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
 rotation_on_cpu(mesh, 1, 0.1)
 @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
 
-using CUDAdrv
+# ---
+
+using CUDAdrv, CuArrays, CuArrays.CUFFT
+
 CUDAdrv.name(CuDevice(0))
 
-using CuArrays
-using CuArrays.CUFFT
+# ---
 
-# +
 function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     
     dt = tf / nt
@@ -142,7 +137,8 @@ function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     real(f)
     
 end
-# -
+
+# ---
 
 nt, tf = 100, 20.
 rotation_on_gpu(mesh, 1, 0.1)
