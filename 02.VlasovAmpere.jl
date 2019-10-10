@@ -14,7 +14,8 @@
 #     name: julia-1.2
 # ---
 
-# ## 1D Vlasov–Ampere system
+# + {"slideshow": {"slide_type": "slide"}, "cell_type": "markdown"}
+# ## 1D1V Vlasov–Ampere system
 #
 # $$
 # \frac{\partial f}{\partial t} + \upsilon \frac{\partial f}{\partial x}
@@ -25,35 +26,11 @@
 # \frac{\partial E}{\partial t} = - J = \int f\upsilon \; d\upsilon
 # $$
 
-# ## Algorithm 
-#
-# - For each $j$ compute discrete Fourier transform in $x$ of $f^n(x_i,\upsilon_j)$ yielding $f_k^n(\upsilon_j)$, 
-#
-# - For $ k \neq 0 $
-#
-#     - Compute 
-#     
-#     $$f^{n+1}_k(\upsilon_j) = e^{−2i\pi k \upsilon
-#     \Delta t/L} f_n^k(\upsilon_j),$$
-#     
-#     - Compute 
-#     
-#     $$\rho_k^{n+1} = \Delta \upsilon \sum_j􏰄 f^{n+1}_k(\upsilon_j),$$
-#     
-#     - Compute
-#     
-#     $$E^{n+1}_k = \rho^{n+1}_k L/(2i\pi k \epsilon_0),$$
-#     
-# - For $k = 0$ do nothing: 
-#
-# $$f_{n+1}(\upsilon_j) = f^n_k(\upsilon_j), E^{n+1}_k = E^n_k$$.
-#
-# - Perform inverse discrete Fourier transform of $E^{n+1}_k$ and for each $j$ of $f^{n+1}_k (\upsilon_j)$.
-
+# + {"slideshow": {"slide_type": "slide"}}
 using ProgressMeter, FFTW, Plots, LinearAlgebra
 using BenchmarkTools, Statistics
 
-# +
+# + {"slideshow": {"slide_type": "slide"}}
 """
     UniformMesh(start, stop, length)
 
@@ -80,7 +57,7 @@ struct UniformMesh
 end
 
 
-# +
+# + {"slideshow": {"slide_type": "slide"}}
 """
 
     compute_rho( mesh, f)
@@ -98,7 +75,7 @@ function compute_rho(meshv::UniformMesh, f)
    
 end
 
-# +
+# + {"slideshow": {"slide_type": "slide"}}
 """
 compute electric field from ρ
 """
@@ -113,15 +90,38 @@ function compute_e(mesh::UniformMesh, ρ)
 end
 
 
-# +
+# + {"slideshow": {"slide_type": "slide"}}
 """
-
-    advection! = AmpereAdvection( mesh ) 
+    advection! = AmpereAdvection( mesh, kx)
 
     ∂f/∂t − v ∂f/∂x  = 0
     ∂E/∂t = −J = ∫ fv dv
     ∂f/∂t − E(x) ∂f/∂v  = 0
 
+For every created struct, two methods are available
+- Advection method along v
+- Advection method along x and e computation
+
+## Algorithm to compute electric field during advection along x
+
+- For each ``j`` compute discrete Fourier transform in ``x``
+ of ``f^n(x_i,\\upsilon_j)`` yielding ``f_k^n(\\upsilon_j)``, 
+- For `` k \\neq 0 ``, compute 
+```math
+f^{n+1}_k(\\upsilon_j) = e^{−2i\\pi k \\upsilon
+    \\Delta t/L} f_n^k(\\upsilon_j),
+```
+```math
+\\rho_k^{n+1} = \\Delta \\upsilon \\sum_j􏰄 f^{n+1}_k(\\upsilon_j),
+```
+```math
+E^{n+1}_k = \\rho^{n+1}_k L/(2i\\pi k \\epsilon_0),
+```
+- For ``k = 0`` do nothing: 
+```math
+f_{n+1}(\\upsilon_j) = f^n_k(\\upsilon_j), E^{n+1}_k = E^n_k.
+```
+- Perform inverse discrete Fourier transform of ``E^{n+1}_k`` and for each ``j`` of ``f^{n+1}_k (\\upsilon_j)``.
 """
 struct AmpereAdvection 
     
@@ -142,15 +142,11 @@ struct AmpereAdvection
 end
 
 
-# +
-"""
-    Advection function along v
+# + {"slideshow": {"slide_type": "slide"}}
+?AmpereAdvection
 
-```math
-\\frac{df}{dt} = e \\frac{df}{dv}
-```
+# + {"slideshow": {"slide_type": "slide"}}
 
-"""
 function (adv :: AmpereAdvection)( fᵗ  :: Array{ComplexF64,2}, 
                                    e   :: Vector{ComplexF64}, 
                                    dt  :: Float64 )
@@ -159,20 +155,10 @@ function (adv :: AmpereAdvection)( fᵗ  :: Array{ComplexF64,2},
     ifft!(fᵗ, 1)
 
 end
-# -
 
 
-"""
-    Advection function along x and e computation
+# + {"slideshow": {"slide_type": "slide"}}
 
-```math
-\\frac{df}{dt} = v \\frac{df}{dx}
-```
-```math
-\\frac{\\partial E}{\\partial t} = \\int fv \\; dv
-```
-
-"""
 function (adv :: AmpereAdvection)( f   :: Array{ComplexF64,2}, 
                                    e   :: Vector{ComplexF64}, 
                                    v   :: Vector{Float64}, 
@@ -194,7 +180,7 @@ function (adv :: AmpereAdvection)( f   :: Array{ComplexF64,2},
 end
 
 
-# +
+# + {"slideshow": {"slide_type": "slide"}}
 """
 Landau damping initialisation function
 
@@ -210,65 +196,61 @@ function landau( ϵ, kx, x, v )
     (1.0.+ϵ*cos.(kx*x))/sqrt(2π) .* transpose(exp.(-0.5*v.*v))
     
 end
-# -
 
+# + {"slideshow": {"slide_type": "slide"}}
 ?landau
 
-function vlasov_ampere( nx, nv, xmin, xmax, vmin, vmax , tf, nt)
-
-    meshx = UniformMesh(xmin, xmax, nx)
-    meshv = UniformMesh(vmin, vmax, nv)
-            
-    # Initialize distribution function
-    x = meshx.points
-    v = meshv.points
-    ϵ, kx = 0.001, 0.5
-    
-    # Allocate arrays for distribution function and its transposed
-    f = zeros(Complex{Float64},(nx,nv))
-    fᵀ= zeros(Complex{Float64},(nv,nx))
-    
-    f .= landau( ϵ, kx, x, v)
-    
-    transpose!(fᵀ,f)
-    
-    ρ  = compute_rho(meshv, f)
-    e  = zeros(ComplexF64, nx)
-    e .= compute_e(meshx, ρ)
-    
-    nrj = Float64[]
-    
-    dt = tf / nt
-    
-    advection_x! = AmpereAdvection( meshx )
-    advection_v! = AmpereAdvection( meshv )
-            
-    @showprogress 1 for i in 1:nt
-        
-        advection_v!(fᵀ, e,  0.5dt)
-        
-        transpose!(f,fᵀ)
-        
-        advection_x!( f, e, v, dt)
-        
-        push!(nrj, log(sqrt((sum(e.^2))*meshx.step)))
-        
-        transpose!(fᵀ,f)
-        
-        advection_v!(fᵀ, e,  0.5dt)
-        
-    end
-    real(f), nrj
-end
-
+# + {"slideshow": {"slide_type": "slide"}}
 nx, nv = 256, 256
 xmin, xmax =  0., 4*π
 vmin, vmax = -6., 6.
 tf = 60
 nt = 600
+meshx = UniformMesh(xmin, xmax, nx)
+meshv = UniformMesh(vmin, vmax, nv)
+            
+# Initialize distribution function
+x = meshx.points
+v = meshv.points
+ϵ, kx = 0.001, 0.5
+    
+# Allocate arrays for distribution function and its transposed
+f = zeros(Complex{Float64},(nx,nv))
+fᵀ= zeros(Complex{Float64},(nv,nx))
+    
+f .= landau( ϵ, kx, x, v)
+    
+transpose!(fᵀ,f)
+    
+ρ  = compute_rho(meshv, f)
+e  = zeros(ComplexF64, nx)
+e .= compute_e(meshx, ρ)
+    
+mod_e = Float64[]
+    
+dt = tf / nt
+    
+advection_x! = AmpereAdvection( meshx )
+advection_v! = AmpereAdvection( meshv );
+
+# +
+        
+@showprogress 1 for i in 1:nt
+    
+    advection_v!(fᵀ, e,  0.5dt)
+    
+    transpose!(f,fᵀ)
+    
+    advection_x!( f, e, v, dt)
+    
+    push!(mod_e, log(sqrt((sum(e.^2))*meshx.step)))
+    
+    transpose!(fᵀ,f)
+    
+    advection_v!(fᵀ, e,  0.5dt)
+end
+
+# + {"slideshow": {"slide_type": "slide"}}
 t =  range(0,stop=tf,length=nt)
 plot(t, -0.1533*t.-5.48)
-f, nrj = vlasov_ampere(nx, nv, xmin, xmax, vmin, vmax, tf, nt)
-plot!(t, nrj , label=:ampere )
-
-
+plot!(t, mod_e , label=:ampere )
