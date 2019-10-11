@@ -118,6 +118,7 @@ function landau_sampling!( pg :: ParticleGroup{1,2}, alpha, kx )
 
 end
 
+#+
 #md # ---
 
 n_particles = 10000
@@ -127,11 +128,12 @@ landau_sampling!(pg, alpha, kx)
 
 #md # --
 
+#+
 xp = vcat([get_x(pg, i) for i in 1:pg.n_particles]...)
 vp = vcat([get_v(pg, i) for i in 1:pg.n_particles]'...)
 
 #md # ---
-
+#+
 pp = plot(layout=(3,1))
 histogram!(pp[1,1], xp, normalize=true, bins = 100, lab=:x)
 plot!(pp[1,1], x -> (1+alpha*cos(kx*x))/(2π/kx), 0., 2π/kx, lab="")
@@ -145,6 +147,7 @@ plot!(pp[3,1], v -> exp( - v^2 / 2) * 4 / π^2 , -6, 6, lab="")
 
 #md # ---
 
+#+
 histogram2d(vp[:,1], vp[:,2], normalize=true, bins=100)
 #md savefig("hist2d.svg")
 
