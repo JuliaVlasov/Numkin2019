@@ -237,7 +237,7 @@ end
 t = range(0, stop=tf, length=nt)
 plot(t, -0.1533*t.-5.48)
 plot!(t, mod_e , label=:ampere )
-savefig("mod_e.svg")
+#md savefig("mod_e.svg")
 
 #md # ![](mod_e.svg)
 
