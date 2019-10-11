@@ -18,7 +18,7 @@ Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
 
 using ProgressMeter, Plots, GEMPIC
 
-# ---
+#md # ---
 
 # # Strong Landau Damping
 #
@@ -28,7 +28,7 @@ kx, α = 0.5, 0.5
 xmin, xmax = 0, 2π/kx
 domain = [xmin, xmax, xmax - xmin]
 
-# --
+#md # --
 
 # The numerical parameters
 
@@ -38,7 +38,7 @@ n_particles = 100000
 mesh = GEMPIC.Mesh( xmin, xmax, nx)
 spline_degree = 3
 
-# ---
+#md # ---
 
 # Initialize particles
 
@@ -48,7 +48,7 @@ sampler = LandauDamping( α, kx)
 
 sample!(sampler, particle_group)
 
-# --
+#md # --
 
 # Particle-mesh coupling operators
 
@@ -65,18 +65,18 @@ efield_poisson = zeros(Float64, nx)
 
 maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 
-# ---
+#md # ---
 
 # ### Charge density
 
 xg = LinRange(xmin, xmax, nx)
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, rho)
 plot( xg, sval, label="ρ")
-savefig("rho.svg")
+#md savefig("rho.svg")
 
-# ![](rho.svg)
+#md # ![](rho.svg)
 
-# ---
+#md # ---
 
 # ### Electric field 
 
@@ -85,11 +85,11 @@ solve_poisson!( efield_poisson, particle_group,
 
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
 plot( xg, sval )       
-savefig("ex.svg")
+#md savefig("ex.svg")
 
-# ![](ex.svg)
+#md # ![](ex.svg)
 
-# ---
+#md # ---
 
 # Initialize the arrays for the spline coefficients of the fields
 efield_dofs = [copy(efield_poisson), zeros(Float64, nx)]
@@ -108,7 +108,7 @@ efield_dofs_n = propagator.e_dofs
 thdiag = TimeHistoryDiagnostics( particle_group, maxwell_solver, 
                         kernel_smoother0, kernel_smoother1 );
 
-# ---
+#md # ---
 
 # ## Loop over time
 
@@ -129,7 +129,7 @@ steps, Δt = 100, 0.05
 
 end
 
-# ---
+#md # ---
 
 # ## Diagnostics stored in a dataframe
 
@@ -141,9 +141,9 @@ first(thdiag.data, 5)
 import Gadfly: Geom, Scale
 
 Gadfly.plot(thdiag.data, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
-savefig("thdiag.svg")
-nothing # hide
+#md savefig("thdiag.svg")
+#md nothing # hide
 
-# ![](thdiag.svg)
+#md # ![](thdiag.svg)
 
-# ---
+#md # ---
