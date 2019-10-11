@@ -12,7 +12,7 @@ using Plots, BenchmarkTools, FFTW, LinearAlgebra
 #
 # ``x \in [-π, π], y \in [-π, π] `` and  `` t \in [0, 200π] ``
 
-# ---
+#md # ---
 
 struct Mesh
     
@@ -33,7 +33,7 @@ struct Mesh
     end
 end
 
-# ---
+#md # ---
 
 function exact(time, mesh :: Mesh; shift=1.0)
    
@@ -47,7 +47,7 @@ function exact(time, mesh :: Mesh; shift=1.0)
     f
 end
 
-# ---
+#md # ---
 using ProgressMeter
 
 function animation( tf, nt)
@@ -74,15 +74,15 @@ function animation( tf, nt)
     
 end
 
-# ---
+#md # ---
 
 anim = animation( 2π, 100)
 gif(anim, "rotation2d.gif", fps = 30)
-nothing # hide
+#md nothing # hide
 
-# ![](rotation2d.gif)
+#md # ![](rotation2d.gif)
 
-# ---
+#md # ---
 
 function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64) 
     
@@ -114,14 +114,14 @@ function rotation_on_cpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
     
 end
 
-# ---
+#md # ---
 
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
 rotation_on_cpu(mesh, 1, 0.1)
 @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
 
-# ---
+#md # ---
 
 using Pkg 
 
@@ -135,7 +135,7 @@ if GPU_ENABLED
 
 end
 
-# ---
+#md # ---
     
 if GPU_ENABLED
 
@@ -180,7 +180,7 @@ if GPU_ENABLED
 
 end
 
-# ---
+#md # ---
 
 if GPU_ENABLED
 
