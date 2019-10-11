@@ -6,14 +6,16 @@ using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
 # ### Advection equation for a rotation in two dimensional domain
 #
-#  $$
-#  \frac{d f}{dt} +  (y \frac{d f}{dx} - x \frac{d f}{dy}) = 0
-#  $$
+# ```math
+#  \\frac{d f}{dt} +  (y \\frac{d f}{dx} - x \\frac{d f}{dy}) = 0
+# ```
 #
-#  $$
-#  x \in [-\pi, \pi],\qquad y \in [-\pi, \pi] \qquad \mbox{ and } \qquad t \in [0, 200\pi]
-#  $$
-include(joinpath("$@__DIR__", "rotation2d_movie.jl"))
+# ``x \in [-π, π], y \in [-π, π] `` and  `` t \in [0, 200π] ``
+
+# ---
+
+include(joinpath(@__DIR__, "../../rotation2d_movie.jl"))
+
 # ![](rotation2d.gif)
 
 # ---
@@ -28,8 +30,9 @@ struct Mesh
     ky   :: Vector{Float64}
     
     function Mesh( xmin, xmax, nx, ymin, ymax, ny)
-        x = range(xmin, stop=xmax, length=nx+1)[1:end-1]  ## we remove the end point
-        y = range(ymin, stop=ymax, length=ny+1)[1:end-1]  ## periodic boundary condition
+        ## periodic boundary condition, we remove the end point.
+        x = range(xmin, stop=xmax, length=nx+1)[1:end-1]  
+        y = range(ymin, stop=ymax, length=ny+1)[1:end-1]  
         kx  = 2π ./ (xmax-xmin) .* [0:nx÷2-1;nx÷2-nx:-1]
         ky  = 2π ./ (ymax-ymin) .* [0:ny÷2-1;ny÷2-ny:-1]
         new( nx, ny, x, y, kx, ky)
@@ -91,55 +94,69 @@ rotation_on_cpu(mesh, 1, 0.1)
 
 # ---
 
-using CUDAdrv, CuArrays, CuArrays.CUFFT
+using Pkg 
 
-CUDAdrv.name(CuDevice(0))
+GPU_ENABLED = haskey(Pkg.installed(), "CUDAdrv")
+
+if GPU_ENABLED
+
+    using CUDAdrv, CuArrays, CuArrays.CUFFT
+    
+    println(CUDAdrv.name(CuDevice(0)))
+
+end
 
 # ---
+    
+if GPU_ENABLED
 
-function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
-    
-    dt = tf / nt
-    
-    f   = zeros(ComplexF64,(mesh.nx, mesh.ny))
-    f  .= exact( 0.0, mesh)
-    
-    d_f    = CuArray(f) # allocate f on GPU
-    
-    # Create fft plans on GPU
-    p_x    = plan_fft!(d_f,  [1])
-    pinv_x = plan_ifft!(d_f, [1])
-    p_y    = plan_fft!(d_f,  [2])
-    pinv_y = plan_ifft!(d_f, [2])  
-    
-    # Allocate on GPU
-    d_exky = CuArray(exp.( 1im*tan(dt/2) .* mesh.x  .* mesh.ky'))
-    d_ekxy = CuArray(exp.(-1im*sin(dt)   .* mesh.y' .* mesh.kx ))
-    
-    for n = 1:nt
+    function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
         
-        p_y * d_f
-        d_f .*= d_exky 
-        pinv_y * d_f
+        dt = tf / nt
         
-        p_x * d_f
-        d_f .*= d_ekxy 
-        pinv_x * d_f
+        f   = zeros(ComplexF64,(mesh.nx, mesh.ny))
+        f  .= exact( 0.0, mesh)
         
-        p_y * d_f
-        d_f .*= d_exky 
-        pinv_y * d_f
+        d_f    = CuArray(f) # allocate f on GPU
+        
+        p_x    = plan_fft!(d_f,  [1]) # Create fft plans on GPU
+        pinv_x = plan_ifft!(d_f, [1])
+        p_y    = plan_fft!(d_f,  [2])
+        pinv_y = plan_ifft!(d_f, [2])  
+        
+        d_exky = CuArray(exp.( 1im*tan(dt/2) .* mesh.x  .* mesh.ky'))
+        d_ekxy = CuArray(exp.(-1im*sin(dt)   .* mesh.y' .* mesh.kx ))
+        
+        for n = 1:nt
+            
+            p_y * d_f
+            d_f .*= d_exky 
+            pinv_y * d_f
+            
+            p_x * d_f
+            d_f .*= d_ekxy 
+            pinv_x * d_f
+            
+            p_y * d_f
+            d_f .*= d_exky 
+            pinv_y * d_f
+            
+        end
+        
+        f .= collect(d_f) # Transfer f from GPU to CPU
+        
+        real(f)
         
     end
-    
-    f .= collect(d_f) # Transfer f from GPU to CPU
-    
-    real(f)
-    
+
 end
 
 # ---
 
-nt, tf = 100, 20.
-rotation_on_gpu(mesh, 1, 0.1)
-@time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+if GPU_ENABLED
+
+    nt, tf = 100, 20.
+    rotation_on_gpu(mesh, 1, 0.1)
+    @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+
+end
