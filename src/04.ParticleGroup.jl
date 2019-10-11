@@ -23,7 +23,7 @@ mutable struct ParticleGroup{D,V}
     end
 end
 
-# ---
+#md # ---
 
 # 
 # Set position of ith particle of p to x
@@ -34,7 +34,7 @@ end
 
 end
 
-# --
+#md # --
 
 # 
 # Set position of ith particle of p to x when x is a vector
@@ -45,7 +45,7 @@ end
 
 end
 
-# ---
+#md # ---
 
 #
 # Set velocity of ith particle of p to v
@@ -56,7 +56,7 @@ end
 
 end
 
-# --
+#md # --
 
 # 
 # Set velocity of ith particle of p to v
@@ -67,7 +67,7 @@ end
 
 end
 
-# ---
+#md # ---
 
 #
 # Get position of ith particle of p
@@ -86,7 +86,7 @@ end
      :(p.data[$D+1:$D+$V, i])
 end
 
-# ---
+#md # ---
 
 # 
 # Sampling from a probability distribution to initialize Landau damping
@@ -118,19 +118,19 @@ function landau_sampling!( pg :: ParticleGroup{1,2}, alpha, kx )
 
 end
 
-# ---
+#md # ---
 
 n_particles = 10000
 pg = ParticleGroup{1,2}( n_particles)
 alpha, kx = 0.1, 0.5
 landau_sampling!(pg, alpha, kx)
 
-# --
+#md # --
 
 xp = vcat([get_x(pg, i) for i in 1:pg.n_particles]...)
 vp = vcat([get_v(pg, i) for i in 1:pg.n_particles]'...)
 
-# ---
+#md # ---
 
 pp = plot(layout=(3,1))
 histogram!(pp[1,1], xp, normalize=true, bins = 100, lab=:x)
@@ -139,15 +139,15 @@ histogram!(pp[2,1], vp[:,1], normalize=true, bins = 100, lab=:vx)
 plot!(pp[2,1], v -> exp( - v^2 / 2) * 4 / π^2 , -6, 6, lab="")
 histogram!(pp[3,1], vp[:,2], normalize=true, bins = 100, lab=:vy)
 plot!(pp[3,1], v -> exp( - v^2 / 2) * 4 / π^2 , -6, 6, lab="")
-savefig("particles.svg"); nothing # hide
+#md savefig("particles.svg"); nothing # hide
 
-# ![](particles.svg)
+#md # ![](particles.svg)
 
-# ---
+#md # ---
 
 histogram2d(vp[:,1], vp[:,2], normalize=true, bins=100)
-savefig("hist2d.svg")
+#md savefig("hist2d.svg")
 
-# ![](hist2d.svg)
+#md # ![](hist2d.svg)
 
-# ---
+#md # ---
