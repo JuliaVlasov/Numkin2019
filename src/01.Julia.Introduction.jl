@@ -6,7 +6,7 @@
 #  - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now) at IRMAR
 #  - **Julia v1.0** since July 2018 
 
-# ---
+#md # ---
 
 #
 # # Why Julia?
@@ -18,7 +18,7 @@
 # - Julia's promise is to provide a "best of both worlds" experience for programmers who need to develop novel algorithms and bring them into production environments with minimal effort.
 #
 
-# ---
+#md # ---
 
 # # Julia's Engineering and Design Tradoffs
 #
@@ -34,7 +34,7 @@
 #
 # [© ChrisRackaukas](https://www.youtube.com/watch?v=zJ3R6vOhibA&feature=em-uploademail) 
 
-# ---
+#md # ---
 
 # # Type-Dispatch Programming
 #
@@ -44,7 +44,7 @@
 #
 # [JuliaCon 2019 | The Unreasonable Effectiveness of Multiple Dispatch | Stefan Karpinski](https://youtu.be/kc9HwsxE1OY)
 
-# ---
+#md # ---
 
 using DifferentialEquations, Plots
 
@@ -68,18 +68,18 @@ prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6)
 nothing # hide
 
-# ---
+#md # ---
 
 # Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 scatter!(sol.t, u, label = "Analytic")
-savefig("pendulum1.svg")
+#md savefig("pendulum1.svg")
 
-# ![](pendulum1.svg)
+#md # ![](pendulum1.svg)
 
-# ---
+#md # ---
 
 # [Numbers with Uncertainties](http://tutorials.juliadiffeq.org/html/type_handling/02-uncertainties.html)
 
@@ -102,8 +102,9 @@ end
 #Pass to solvers
 prob = ODEProblem(simplependulum, u₀, tspan)
 sol = solve(prob, Tsit5(), reltol = 1e-6);
+nothing # hide
 
-# ---
+#md # ---
 
 # Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
@@ -113,4 +114,7 @@ plot!(sol.t, u, label = "Analytic")
 savefig("pendulum2.svg"); 
 
 
-# ![](pendulum2.svg)
+#md # ![](pendulum2.svg)
+
+
+#md # ---
