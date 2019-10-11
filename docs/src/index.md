@@ -468,9 +468,9 @@ function animation( tf, nt)
        f = exact(t, mesh)
        t += dt
        p = contour(mesh.x, mesh.y, f, axis=[], framestyle=:none)
-       plot!(p[1]; clims=(0.,1.), aspect_ratio=:equal, colorbar=false)
+       plot!(p[1]; clims=(0.,1.), aspect_ratio=:equal, colorbar=false, show=false)
        plot!(sqrt(2) .* cos.(-pi:0.1:pi+0.1),
-             sqrt(2) .* sin.(-pi:0.1:pi+0.1), label="")
+             sqrt(2) .* sin.(-pi:0.1:pi+0.1), label="", show=false)
        xlims!(-π,π)
        ylims!(-π,π)
        next!(bar) ## increment the progress bar
@@ -946,21 +946,15 @@ end
 ```@example index
 using DataFrames
 first(thdiag.data, 5)
-```
 
 ---
 
-```@example index
-import Gadfly: Geom, Scale
-
-Gadfly.plot(thdiag.data, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
-savefig("thdiag.svg")
-nothing # hide
+plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
+savefig("mod_e.svg")
 ```
 
-![](thdiag.svg)
+![](mod_e.svg)
 
----
 ### Optimizing Julia code is often done at the expense of transparency
 
 ```@example index
