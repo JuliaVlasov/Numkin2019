@@ -136,3 +136,5 @@ end
 #md #  * JuliaGPU - GPU Computing for Julia.
 #md #  * FluxML - The Elegant Machine Learning Stack.
 #md #
+
+@test true #src
