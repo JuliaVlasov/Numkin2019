@@ -5,5 +5,4 @@ deps/deps.jl
 .ipynb_checkpoints
 Manifest.toml
 *.swp
-*.html
 slides.jl
