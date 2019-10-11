@@ -65,7 +65,8 @@ end
 
 #Pass to solvers
 prob = ODEProblem(simplependulum, u₀, tspan)
-sol = solve(prob, Tsit5(), reltol = 1e-6);
+sol = solve(prob, Tsit5(), reltol = 1e-6)
+nothing # hide
 
 # ---
 
