@@ -14,12 +14,6 @@ using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
 # ---
 
-include(joinpath(@__DIR__, "../../rotation2d_movie.jl"))
-
-# ![](rotation2d.gif)
-
-# ---
-
 struct Mesh
     
     nx   :: Int64
@@ -52,6 +46,41 @@ function exact(time, mesh :: Mesh; shift=1.0)
 
     f
 end
+
+# ---
+using ProgressMeter
+
+function animation( tf, nt)
+    
+    mesh = Mesh( -π, π, 64, -π, π, 64)
+    dt = tf / nt
+    bar = Progress(nt,1) ## progress bar
+    t = 0
+    anim = @animate for n=1:nt
+       
+       f = exact(t, mesh)
+       t += dt
+       p = contour(mesh.x, mesh.y, f, axis=[], framestyle=:none)
+       plot!(p[1]; clims=(0.,1.), aspect_ratio=:equal, colorbar=false)
+       plot!(sqrt(2) .* cos.(-pi:0.1:pi+0.1), 
+             sqrt(2) .* sin.(-pi:0.1:pi+0.1), label="")
+       xlims!(-π,π)
+       ylims!(-π,π)
+       next!(bar) ## increment the progress bar
+        
+    end
+
+    anim
+    
+end
+
+# ---
+
+anim = animation( 2π, 100)
+gif(anim, "rotation2d.gif", fps = 30)
+nothing # hide
+
+# ![](rotation2d.gif)
 
 # ---
 
