@@ -35,7 +35,7 @@ domain = [xmin, xmax, xmax - xmin]
 ∆t = 0.05
 nx = 32 
 n_particles = 100000
-mesh = Mesh( xmin, xmax, nx)
+mesh = GEMPIC.Mesh( xmin, xmax, nx)
 spline_degree = 3
 
 # ---
@@ -43,7 +43,7 @@ spline_degree = 3
 # Initialize particles
 
 mass, charge = 1.0, 1.0
-particle_group = ParticleGroup{1,2}( n_particles, mass, charge, 1)   
+particle_group = GEMPIC.ParticleGroup{1,2}( n_particles, mass, charge, 1)   
 sampler = LandauDamping( α, kx)
 
 sample!(sampler, particle_group)
@@ -138,10 +138,11 @@ first(thdiag.data, 5)
 
 # ---
 
-using Gadfly
+import Gadfly: Geom, Scale
 
-plot(thdiag.dat, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
+Gadfly.plot(thdiag.data, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
 savefig("thdiag.svg")
+nothing # hide
 
 # ![](thdiag.svg)
 
