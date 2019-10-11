@@ -48,13 +48,10 @@ function exact(time, mesh :: Mesh; shift=1.0)
 end
 
 #md # ---
-using ProgressMeter
-
 function animation( tf, nt)
     
     mesh = Mesh( -π, π, 64, -π, π, 64)
     dt = tf / nt
-    bar = Progress(nt,1) ## progress bar
     t = 0
     anim = @animate for n=1:nt
        
@@ -66,7 +63,6 @@ function animation( tf, nt)
              sqrt(2) .* sin.(-pi:0.1:pi+0.1), label="", show=false)
        xlims!(-π,π)
        ylims!(-π,π)
-       next!(bar) ## increment the progress bar
         
     end
 
@@ -116,16 +112,12 @@ end
 
 #md # ---
 
-function slides03() #src
-
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
 rotation_on_cpu(mesh, 1, 0.1)
 @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
 
-true #src
-
-end #src
+@test true #src
 
 #md # ---
 
@@ -193,5 +185,7 @@ if GPU_ENABLED
     nt, tf = 100, 20.
     rotation_on_gpu(mesh, 1, 0.1)
     @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+
+    @test true #src
 
 end
