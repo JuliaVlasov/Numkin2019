@@ -6,7 +6,7 @@
 #  - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now) at IRMAR
 #  - **Julia v1.0** since July 2018 
 
-# --
+# ---
 
 #
 # # Why Julia?
