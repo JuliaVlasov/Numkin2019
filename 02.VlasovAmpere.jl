@@ -240,3 +240,5 @@ plot!(t, mod_e , label=:ampere )
 savefig("mod_e.svg")
 
 # ![](mod_e.svg)
+
+# ---
