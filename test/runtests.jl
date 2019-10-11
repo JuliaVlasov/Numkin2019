@@ -1,9 +1,8 @@
 using Test
-import Numkin2019
 
-@test Numkin2019.slides01()
-@test Numkin2019.slides02()
-@test Numkin2019.slides03()
-@test Numkin2019.slides04()
-@test Numkin2019.slides05()
-@test Numkin2019.slides06()
+include("../src/01.Julia.Introduction.jl")
+include("../src/02.VlasovAmpere.jl")
+include("../src/03.RotationGPU.jl")
+include("../src/04.ParticleGroup.jl")
+include("../src/05.GEMPIC.jl")
+include("../src/06.Conclusions.jl")
