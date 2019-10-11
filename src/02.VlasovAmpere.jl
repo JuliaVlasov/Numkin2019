@@ -8,7 +8,7 @@
 # \\frac{\\partial E}{\\partial t} = - J = \\displaystyle \\int  f\\upsilon \\; d\\upsilon
 # ```
 
-# ---
+#md # ---
 
 using ProgressMeter, FFTW, Plots, LinearAlgebra
 using BenchmarkTools, Statistics
@@ -37,7 +37,7 @@ struct UniformMesh
 
 end
 
-# ---
+#md # ---
 #
 # ## Compute charge density ρ(x)
 #
@@ -58,7 +58,7 @@ function compute_rho(meshv::UniformMesh, f)
    
 end
 
-# ---
+#md # ---
 #
 # ## Compute electric field from ρ(x)
 #
@@ -79,7 +79,7 @@ function compute_e(mesh::UniformMesh, ρ)
 end
 
 #
-# ---
+#md # ---
 #
 # ## Callable struct `Advection`
 #
@@ -110,7 +110,7 @@ struct AmpereAdvection
 end
 
 
-# ---
+#md # ---
 
 function (adv :: AmpereAdvection)( fᵗ  :: Array{ComplexF64,2}, 
                                    e   :: Vector{ComplexF64}, 
@@ -121,7 +121,7 @@ function (adv :: AmpereAdvection)( fᵗ  :: Array{ComplexF64,2},
 
 end
 
-# --
+#md # --
 
 function (adv :: AmpereAdvection)( f   :: Array{ComplexF64,2}, 
                                    e   :: Vector{ComplexF64}, 
@@ -145,7 +145,7 @@ end
 
 #
 #
-# ----
+#md # ----
 #
 # ## Initial distribution function
 #
@@ -168,7 +168,7 @@ function landau( ϵ, kx, x, v )
     
 end
 
-# ---
+#md # ---
 
 nx, nv = 256, 256
 xmin, xmax =  0., 4*π
@@ -178,7 +178,7 @@ nt = 600
 meshx = UniformMesh(xmin, xmax, nx)
 meshv = UniformMesh(vmin, vmax, nv);
 
-# --
+#md # --
             
 # Initialize distribution function
 x = meshx.points
@@ -191,15 +191,15 @@ fᵀ= zeros(Complex{Float64},(nv,nx))
     
 f .= landau( ϵ, kx, x, v); 
 
-# ---
+#md # ---
 
 # Plot the distribution
 
 surface( x, v, real(f))
-savefig("landau.svg")
-# ![](landau.svg)
+#md savefig("landau.svg")
+#md # ![](landau.svg)
 
-# ---
+#md # ---
     
 transpose!(fᵀ,f)
     
@@ -214,7 +214,7 @@ dt = tf / nt
 advection_x! = AmpereAdvection( meshx )
 advection_v! = AmpereAdvection( meshv );
 
-# ---
+#md # ---
         
 @showprogress 1 for i in 1:nt
     
@@ -232,13 +232,13 @@ advection_v! = AmpereAdvection( meshv );
 
 end
 
-# ---
+#md # ---
 
 t = range(0, stop=tf, length=nt)
 plot(t, -0.1533*t.-5.48)
 plot!(t, mod_e , label=:ampere )
 savefig("mod_e.svg")
 
-# ![](mod_e.svg)
+#md # ![](mod_e.svg)
 
-# ---
+#md # ---
