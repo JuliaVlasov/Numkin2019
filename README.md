@@ -1,4 +1,4 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/juliavlasov/Numkin2019/draft)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/juliavlasov/Numkin2019/master)
 
 # Solving the Vlasov equation with Julia
 
