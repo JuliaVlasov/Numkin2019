@@ -116,10 +116,16 @@ end
 
 #md # ---
 
+function slides03() #src
+
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
 rotation_on_cpu(mesh, 1, 0.1)
 @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
+
+true #src
+
+end #src
 
 #md # ---
 

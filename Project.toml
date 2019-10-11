@@ -1,12 +1,15 @@
+name = "Numkin2019"
+uuid = "d97255f8-54f8-49d1-846e-47da5f2bb837"
+authors = ["Pierre Navaro <pierre.navaro@math.cnrs.fr>"]
+version = "0.1.0"
+
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
-CUDAdrv = "c5f51814-7f29-56b8-a69c-e4d8f6be1fde"
-CuArrays = "3a865a2d-5b23-5a0f-bc46-62713ec82fae"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DiffEqOperators = "9fdde737-9c7f-55bf-ade8-46b3f136cc48"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-GEMPIC = "b6d65c3a-4a4e-11e9-25d0-d309dc85ddeb"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
@@ -17,3 +20,4 @@ Remark = "79b45036-8e38-5d04-8f49-b9fb23ff5a0d"
 Sobol = "ed01d8cd-4d21-5b2a-85b4-cc3bdc58bad4"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

@@ -170,6 +170,8 @@ end
 
 #md # ---
 
+function slides02() #src
+
 nx, nv = 256, 256
 xmin, xmax =  0., 4*π
 vmin, vmax = -6., 6.
@@ -238,6 +240,9 @@ t = range(0, stop=tf, length=nt)
 plot(t, -0.1533*t.-5.48)
 plot!(t, mod_e , label=:ampere )
 #md savefig("mod_e.svg")
+
+true #src
+end #src
 
 #md # ![](mod_e.svg)
 

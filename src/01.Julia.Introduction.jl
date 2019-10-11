@@ -48,6 +48,8 @@
 
 using DifferentialEquations, Plots
 
+function slides01() #src
+
 g = 9.79 # Gravitational constants
 L = 1.00 # Length of the pendulum
 
@@ -113,6 +115,9 @@ plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
 #md savefig("pendulum2.svg"); 
 
+true #src
+
+end #src
 
 #md # ![](pendulum2.svg)
 
