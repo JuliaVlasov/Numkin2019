@@ -153,4 +153,6 @@ histogram2d(vp[:,1], vp[:,2], normalize=true, bins=100)
 
 #md # ![](hist2d.svg)
 
+@test true #src
+
 #md # ---
