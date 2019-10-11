@@ -136,14 +136,9 @@ end
 using DataFrames
 first(thdiag.data, 5)
 
-# ---
+#md ---
 
-import Gadfly: Geom, Scale
+plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
+#md savefig("mod_e.svg")
+#md # ![](mod_e.svg)
 
-Gadfly.plot(thdiag.data, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
-#md savefig("thdiag.svg")
-#md nothing # hide
-
-#md # ![](thdiag.svg)
-
-#md # ---
