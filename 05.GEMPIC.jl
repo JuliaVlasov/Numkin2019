@@ -1,6 +1,6 @@
 # # GEMPIC
 #
-# Geometric ElectroMagnetic Particle-In-Cell Methods
+# ### Geometric ElectroMagnetic Particle-In-Cell Methods
 #
 # https://arxiv.org/abs/1609.03053
 #
@@ -9,12 +9,12 @@
 # Framework for Finite Element Particle-in-Cell methods based on 
 # the discretization of the underlying Hamiltonian structure of the 
 # Vlasov-Maxwell system. 
+#
+# Install the GEMPIC package
 
-# To run the following install the GEMPIC package
-# ```julia
-# using Pkg
-# Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
-# ```
+using Pkg
+
+Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
 
 using ProgressMeter, Plots, GEMPIC
 
@@ -144,3 +144,5 @@ plot(thdiag.dat, x=:Time, y=:PotentialEnergyE1, Geom.line, Scale.y_log10)
 savefig("thdiag.svg")
 
 # ![](thdiag.svg)
+
+# ---
