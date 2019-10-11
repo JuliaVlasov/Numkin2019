@@ -9,23 +9,23 @@ end
 
 A = rand(1024, 256); B = rand(256, 1024); C = rand(1024, 1024)
 @btime test(A, B, C); #C, A and B are matrices. 
-nothing # hide
+#md nothing # hide
 
-# --
+#md # --
 
 function test_opt(A, B, C)
     BLAS.gemm!('N','N', -1., A, B, 1., C)
     return C
 end
-@btime test_opt(A, B, C); # avoids taking two unnecessary copies of the matrix C.
-nothing # hide
+@btime test_opt(A, B, C) # avoids taking two unnecessary copies of the matrix C.
+#md nothing # hide
 
-# --
+#md # --
 
 C = rand(1024, 1024)
 all(test(A, B, C) .== test_opt(A, B, C))
 
-# ---
+#md # ---
 
 # ### Derivative computation with FFT
 
@@ -46,10 +46,10 @@ end
 
 f = sin.(x) .* cos.(y') # f is a 2d array created by broadcasting
 
-@btime df_dy(f, exky);
-nothing # hide
+@btime df_dy(f, exky)
+#md nothing # hide
 
-# ---
+#md # ---
 
 # ### Memory alignement, and inplace computation.
 
@@ -70,69 +70,69 @@ function df_dy!( f, fᵗ, f̂ᵗ, exky )
 end
 
 @btime df_dy!(f, fᵗ, f̂ᵗ, exky )
-nothing # hide
+#md nothing # hide
 
-# ---
+#md # ---
 
-# # Why use Julia language!
-#
-# - **You develop in the same language in which you optimize.**
-# - Packaging system is very efficient (3173 registered packages)
-# - PyPi (198,360 projects) R (14993 packages)
-# - It is very easy to create a package (easier than R and Python)
-# - It is very easy to use GPU device.
-# - Nice interface for Linear Algebra and Differential Equations
-# - Easy access to BLAS and LAPACK
-# - Julia talks to all major Languages - mostly without overhead!
+#md # # Why use Julia language!
+#md #
+#md # - **You develop in the same language in which you optimize.**
+#md # - Packaging system is very efficient (3173 registered packages)
+#md # - PyPi (198,360 projects) R (14993 packages)
+#md # - It is very easy to create a package (easier than R and Python)
+#md # - It is very easy to use GPU device.
+#md # - Nice interface for Linear Algebra and Differential Equations
+#md # - Easy access to BLAS and LAPACK
+#md # - Julia talks to all major Languages - mostly without overhead!
 
-# ---
+#md # ---
 
-# # What's bad
-#
-# - It is still hard to build shared library or executable from Julia code.
-# - Compilation times can be unbearable.
-# - Plotting takes time (20 seconds for the first plot)
-# - OpenMP is better than the Julia multithreading library but it is progressing.
-# - There is a MPI and PETSc package but they are not very active. 
-# - For parallelization, The Julia community seems to prefer the ditributed processing approach. 
-# - Does not work well with vectorized code, you need to do a lot of inplace computation to avoid memory allocations and use explicit views to avoid copy.
-# - Julia website proclaims that it is faster than Fortran but this is not true.
+#md # # What's bad
+#md #
+#md # - It is still hard to build shared library or executable from Julia code.
+#md # - Compilation times can be unbearable.
+#md # - Plotting takes time (20 seconds for the first plot)
+#md # - OpenMP is better than the Julia multithreading library but it is progressing.
+#md # - There is a MPI and PETSc package but they are not very active. 
+#md # - For parallelization, The Julia community seems to prefer the ditributed processing approach. 
+#md # - Does not work well with vectorized code, you need to do a lot of inplace computation to avoid memory allocations and use explicit views to avoid copy.
+#md # - Julia website proclaims that it is faster than Fortran but this is not true.
+#md 
+#md # [What's Bad About Julia by Jeff Bezanson](https://www.youtube.com/watch?v=TPuJsgyu87U)
 
-# [What's Bad About Julia by Jeff Bezanson](https://www.youtube.com/watch?v=TPuJsgyu87U)
+#md # ---
 
-# ---
-
-# ## So when should i use Julia?
-# 
-# - Now! If you need performance and plan to write your own libraries.
-# - In ~1-2 Years if you want a smooth deploy.
-# - In ~3-5 Years if you want a 100% smooth experience.
-
-# ## Julia Munich Meetup 
-# Every two months, poll for the next meeting that
-# will take place at Garching Campus : https://doodle.com/poll/z3ft2dytnaebyhh7.
-#
-# ## Python-Julia benchmarks by Thierry Dumont
-#
-# https://github.com/Thierry-Dumont/BenchmarksPythonJuliaAndCo/wiki
-
-# ---
-
-# # Julia is a language made for Science.
-#
-#  [Some State of the Art Packages](http://www.stochasticlifestyle.com/some-state-of-the-art-packages-in-julia-v1-0)
-#
-#  * JuliaDiffEq – Differential equation solving and analysis.
-#  * JuliaDiff – Differentiation tools.
-#  * JuliaGeometry – Computational Geometry.
-#  * JuliaGraphs – Graph Theory and Implementation.
-#  * JuliaIntervals - Rigorous numerics with interval arithmetic & applications.
-#  * JuliaMath – Mathematics made easy in Julia.
-#  * JuliaOpt – Optimization.
-#  * JuliaPolyhedra – Polyhedral computation.
-#  * JuliaSparse – Sparse matrix solvers.
-#  * JuliaStats – Statistics and Machine Learning.
-#  * JuliaPlots - powerful convenience for visualization.
-#  * JuliaGPU - GPU Computing for Julia.
-#  * FluxML - The Elegant Machine Learning Stack.
-#
+#md # ## So when should i use Julia?
+#md # 
+#md # - Now! If you need performance and plan to write your own libraries.
+#md # - In ~1-2 Years if you want a smooth deploy.
+#md # - In ~3-5 Years if you want a 100% smooth experience.
+#md 
+#md # ## Julia Munich Meetup 
+#md # Every two months, poll for the next meeting that
+#md # will take place at Garching Campus : https://doodle.com/poll/z3ft2dytnaebyhh7.
+#md #
+#md # ## Python-Julia benchmarks by Thierry Dumont
+#md #
+#md # https://github.com/Thierry-Dumont/BenchmarksPythonJuliaAndCo/wiki
+#md 
+#md # ---
+#md 
+#md # # Julia is a language made for Science.
+#md #
+#md #  [Some State of the Art Packages](http://www.stochasticlifestyle.com/some-state-of-the-art-packages-in-julia-v1-0)
+#md #
+#md #  * JuliaDiffEq – Differential equation solving and analysis.
+#md #  * JuliaDiff – Differentiation tools.
+#md #  * JuliaGeometry – Computational Geometry.
+#md #  * JuliaGraphs – Graph Theory and Implementation.
+#md #  * JuliaIntervals - Rigorous numerics with interval arithmetic & applications.
+#md #  * JuliaMath – Mathematics made easy in Julia.
+#md #  * JuliaOpt – Optimization.
+#md #  * JuliaPolyhedra – Polyhedral computation.
+#md #  * JuliaSparse – Sparse matrix solvers.
+#md #  * JuliaStats – Statistics and Machine Learning.
+#md #  * JuliaPlots - powerful convenience for visualization.
+#md #  * JuliaGPU - GPU Computing for Julia.
+#md #  * FluxML - The Elegant Machine Learning Stack.
+#md #
