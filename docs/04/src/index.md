@@ -131,8 +131,6 @@ function landau_sampling!( pg :: ParticleGroup{1,2}, alpha, kx )
     end
 
 end
-
-#+
 ```
 
 ---
@@ -147,7 +145,6 @@ landau_sampling!(pg, alpha, kx)
 4UkInfedi7B7lKAwjXdpLEd52ajQ8FCDMXGjPBurjZQXb6xR6V
 
 ```@example index
-#+
 xp = vcat([get_x(pg, i) for i in 1:pg.n_particles]...)
 vp = vcat([get_v(pg, i) for i in 1:pg.n_particles]'...)
 ```
@@ -155,7 +152,6 @@ vp = vcat([get_v(pg, i) for i in 1:pg.n_particles]'...)
 ---
 
 ```@example index
-#+
 pp = plot(layout=(3,1))
 histogram!(pp[1,1], xp, normalize=true, bins = 100, lab=:x)
 plot!(pp[1,1], x -> (1+alpha*cos(kx*x))/(2π/kx), 0., 2π/kx, lab="")
@@ -171,9 +167,8 @@ savefig("particles.svg"); nothing # hide
 ---
 
 ```@example index
-#+
 histogram2d(vp[:,1], vp[:,2], normalize=true, bins=100)
-savefig("hist2d.svg")
+savefig("hist2d.svg"); nothing # hide
 ```
 
 ![](hist2d.svg)
