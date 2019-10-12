@@ -208,7 +208,8 @@ Allocate arrays for distribution function and its transposed
 f = zeros(Complex{Float64},(nx,nv))
 fᵀ= zeros(Complex{Float64},(nv,nx))
 
-f .= landau( ϵ, kx, x, v);
+f .= landau( ϵ, kx, x, v)
+nothing # hide
 ```
 
 ---
@@ -255,6 +256,7 @@ t = range(0, stop=tf, length=nt)
 plot(t, -0.1533*t.-5.48)
 plot!(t, mod_e , label=:ampere )
 savefig("mod_e.svg")
+nothing # hide
 ```
 
 ![](mod_e.svg)
