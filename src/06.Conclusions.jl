@@ -1,3 +1,5 @@
+ENV["GKSwstype"]="100" #src
+
 # ### Optimizing Julia code is often done at the expense of transparency
 
 using Random, LinearAlgebra, BenchmarkTools

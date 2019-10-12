@@ -1,3 +1,5 @@
+ENV["GKSwstype"]="100" #src
+
 #md # # Who am I ?
 #md #
 #md #  - My name is *Pierre Navaro*

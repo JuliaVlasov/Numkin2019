@@ -1,3 +1,5 @@
+ENV["GKSwstype"]="100" #src
+
 # # GEMPIC
 #
 # ### Geometric ElectroMagnetic Particle-In-Cell Methods

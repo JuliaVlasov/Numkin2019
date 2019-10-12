@@ -1,3 +1,5 @@
+ENV["GKSwstype"]="100" #src
+
 # # Metaprogramming 
 #
 # ## The ParticleGroup example

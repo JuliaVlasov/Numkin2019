@@ -1,3 +1,5 @@
+ENV["GKSwstype"]="100" #src
+
 # ## 1D1V Vlasov–Ampere system
 #
 # ```math
@@ -193,13 +195,11 @@ f .= landau( ϵ, kx, x, v);
 
 #md # ---
 
-# Plot the distribution
+#nb Plot the distribution
 
-surface( x, v, real(f))
-#md savefig("landau.svg")
-#md # ![](landau.svg)
+#nb surface( x, v, real(f))
 
-#md # ---
+#nb #-
     
 transpose!(fᵀ,f)
     
