@@ -29,7 +29,7 @@ A = rand(1024, 256); B = rand(256, 1024); C = rand(1024, 1024)
 
 
 ```
-  5.288 ms (4 allocations: 16.00 MiB)
+  5.427 ms (4 allocations: 16.00 MiB)
 ```
 
 
@@ -46,7 +46,7 @@ end
 
 
 ```
-  2.421 ms (0 allocations: 0 bytes)
+  3.046 ms (0 allocations: 0 bytes)
 ```
 
 
@@ -95,7 +95,7 @@ f = sin.(x) .* cos.(y') # f is a 2d array created by broadcasting
 
 
 ```
-  109.302 ms (127 allocations: 64.01 MiB)
+  80.485 ms (127 allocations: 64.01 MiB)
 ```
 
 
@@ -129,7 +129,7 @@ end
 
 
 ```
-  36.612 ms (3 allocations: 176 bytes)
+  17.351 ms (3 allocations: 176 bytes)
 ```
 
 
