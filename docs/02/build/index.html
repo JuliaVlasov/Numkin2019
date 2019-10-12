@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+## 1D1V Vlasov–Ampere system
+
+
+$$
+\\frac{\\partial f}{\\partial t} + \\upsilon \\frac{\\partial f}{\\partial x} - E(t,x) \\frac{\\partial f}{\\partial \\upsilon} = 0
+$$
+
+
+$$
+\\frac{\\partial E}{\\partial t} = - J = \\displaystyle \\int  f\\upsilon \\; d\\upsilon
+$$
+
+
+---
+
+
+```julia
+using ProgressMeter, FFTW, Plots, LinearAlgebra
+using BenchmarkTools, Statistics
+
+"""
+    UniformMesh(start, stop, length)
+
+1D uniform mesh data for periodic domain (end point is removed)
+"""
+struct UniformMesh
+
+   start    :: Float64
+   stop     :: Float64
+   length   :: Int64
+   step     :: Float64
+   points   :: Vector{Float64}
+
+   function UniformMesh(start, stop, length)
+
+       points = range(start, stop=stop, length=length+1)[1:end-1]
+       step = (stop - start) / length
+
+       new( start, stop, length, step, points)
+
+   end
+
+end
+```
+
+
+```
+Main.ex-index.UniformMesh
+```
+
+
+---
+
+
+
+
+## Compute charge density ρ(x)
+
+
+```julia
+"""
+    compute_rho( mesh, f)
+
+Compute charge density ρ(x,t) = ∫ f(x,v,t) dv
+
+returns ρ - ρ̄
+
+"""
+function compute_rho(meshv::UniformMesh, f)
+
+   dv  = meshv.step
+   ρ = dv .* vec(sum(real(f), dims=2))
+   ρ .- mean(ρ)
+
+end
+```
+
+
+```
+Main.ex-index.compute_rho
+```
+
+
+---
+
+
+
+
+## Compute electric field from ρ(x)
+
+
+```julia
+"""
+    compute_e(mesh, ρ)
+
+compute electric field from ρ
+"""
+function compute_e(mesh::UniformMesh, ρ)
+
+   n = mesh.length
+   k =  2π / (mesh.stop - mesh.start)
+   modes = [1.0; k .* vcat(1:n÷2-1,-n÷2:-1)...]
+   ρ̂ = fft(ρ)./modes
+   vec(real(ifft(-1im .* ρ̂)))
+
+end
+```
+
+
+```
+Main.ex-index.compute_e
+```
+
+
+---
+
+
+
+
+## Callable struct `Advection`
+
+
+```julia
+"""
+    advection! = AmpereAdvection( mesh, kx)
+
+For every created struct, two methods are available
+- Advection method along v
+- Advection method along x and e computation
+
+"""
+struct AmpereAdvection
+
+    mesh :: UniformMesh
+    kx   :: Vector{Float64}
+
+    function AmpereAdvection( mesh )
+
+        nx  = mesh.length
+        dx  = mesh.step
+        Lx  = mesh.stop - mesh.start
+        kx  = zeros(Float64, nx)
+        kx .= 2π/Lx .* [0:nx÷2-1;-nx÷2:-1]
+        new( mesh, kx)
+
+    end
+
+end
+```
+
+
+```
+Main.ex-index.AmpereAdvection
+```
+
+
+---
+
+
+```julia
+function (adv :: AmpereAdvection)( fᵗ  :: Array{ComplexF64,2},
+                                   e   :: Vector{ComplexF64},
+                                   dt  :: Float64 )
+    fft!(fᵗ, 1)
+    fᵗ .= fᵗ .* exp.(-1im * dt * adv.kx * transpose(e))
+    ifft!(fᵗ, 1)
+
+end
+```
+
+
+--
+
+
+```julia
+function (adv :: AmpereAdvection)( f   :: Array{ComplexF64,2},
+                                   e   :: Vector{ComplexF64},
+                                   v   :: Vector{Float64},
+                                   dt  :: Float64 )
+
+    ev = exp.(-1im*dt * adv.kx * transpose(v))
+
+    fft!(f,1)
+    f .= f .* ev
+    dv = v[2]-v[1]
+    ρ = dv * vec(sum(f,dims=2))
+    for i in 2:length(e)
+        e[i] = -1im * ρ[i] / adv.kx[i]
+    end
+    e[1] = 0.0
+    ifft!(f, 1)
+    ifft!(e)
+    e .= real(e)
+end
+```
+
+
+---
+
+
+
+
+## Initial distribution function
+
+
+$$
+f(x,v) = \\frac{1}{\\sqrt{2\\pi}}(1+ ϵ \\cdot cos(k_x x)) e^{-v^2/2}
+$$
+
+
+```julia
+"""
+    landau( ϵ, kx, x, v )
+
+Landau damping initialisation function
+
+[Wikipedia](https://en.wikipedia.org/wiki/Landau_damping)
+
+
+"""
+function landau( ϵ, kx, x, v )
+
+    (1.0 .+ ϵ*cos.(kx*x))/sqrt(2π) .* transpose(exp.(-0.5*v.*v))
+
+end
+```
+
+
+```
+Main.ex-index.landau
+```
+
+
+---
+
+
+```julia
+nx, nv = 256, 256
+xmin, xmax =  0., 4*π
+vmin, vmax = -6., 6.
+tf = 60
+nt = 600
+meshx = UniformMesh(xmin, xmax, nx)
+meshv = UniformMesh(vmin, vmax, nv);
+```
+
+
+```
+Main.ex-index.UniformMesh(-6.0, 6.0, 256, 0.046875, [-6.0, -5.953125, -5.90625, -5.859375, -5.8125, -5.765625, -5.71875, -5.671875, -5.625, -5.578125  …  5.53125, 5.578125, 5.625, 5.671875, 5.71875, 5.765625, 5.8125, 5.859375, 5.90625, 5.953125])
+```
+
+
+--
+
+
+Initialize distribution function
+
+
+```julia
+x = meshx.points
+v = meshv.points
+ϵ, kx = 0.001, 0.5
+```
+
+
+```
+(0.001, 0.5)
+```
+
+
+Allocate arrays for distribution function and its transposed
+
+
+```julia
+f = zeros(Complex{Float64},(nx,nv))
+fᵀ= zeros(Complex{Float64},(nv,nx))
+
+f .= landau( ϵ, kx, x, v);
+```
+
+
+```
+256×256 Array{Complex{Float64},2}:
+ 6.08196e-9+0.0im  8.04844e-9+0.0im  …  1.06274e-8+0.0im  8.04844e-9+0.0im
+ 6.08196e-9+0.0im  8.04844e-9+0.0im     1.06274e-8+0.0im  8.04844e-9+0.0im
+ 6.08195e-9+0.0im  8.04843e-9+0.0im     1.06274e-8+0.0im  8.04843e-9+0.0im
+ 6.08194e-9+0.0im  8.04842e-9+0.0im     1.06273e-8+0.0im  8.04842e-9+0.0im
+ 6.08193e-9+0.0im   8.0484e-9+0.0im     1.06273e-8+0.0im   8.0484e-9+0.0im
+ 6.08191e-9+0.0im  8.04838e-9+0.0im  …  1.06273e-8+0.0im  8.04838e-9+0.0im
+ 6.08189e-9+0.0im  8.04835e-9+0.0im     1.06273e-8+0.0im  8.04835e-9+0.0im
+ 6.08187e-9+0.0im  8.04832e-9+0.0im     1.06272e-8+0.0im  8.04832e-9+0.0im
+ 6.08184e-9+0.0im  8.04828e-9+0.0im     1.06272e-8+0.0im  8.04828e-9+0.0im
+ 6.08181e-9+0.0im  8.04824e-9+0.0im     1.06271e-8+0.0im  8.04824e-9+0.0im
+           ⋮                         ⋱                              ⋮     
+ 6.08181e-9+0.0im  8.04824e-9+0.0im     1.06271e-8+0.0im  8.04824e-9+0.0im
+ 6.08184e-9+0.0im  8.04828e-9+0.0im     1.06272e-8+0.0im  8.04828e-9+0.0im
+ 6.08187e-9+0.0im  8.04832e-9+0.0im     1.06272e-8+0.0im  8.04832e-9+0.0im
+ 6.08189e-9+0.0im  8.04835e-9+0.0im  …  1.06273e-8+0.0im  8.04835e-9+0.0im
+ 6.08191e-9+0.0im  8.04838e-9+0.0im     1.06273e-8+0.0im  8.04838e-9+0.0im
+ 6.08193e-9+0.0im   8.0484e-9+0.0im     1.06273e-8+0.0im   8.0484e-9+0.0im
+ 6.08194e-9+0.0im  8.04842e-9+0.0im     1.06273e-8+0.0im  8.04842e-9+0.0im
+ 6.08195e-9+0.0im  8.04843e-9+0.0im     1.06274e-8+0.0im  8.04843e-9+0.0im
+ 6.08196e-9+0.0im  8.04844e-9+0.0im  …  1.06274e-8+0.0im  8.04844e-9+0.0im
+```
+
+
+---
+
+
+```julia
+transpose!(fᵀ,f)
+
+ρ  = compute_rho(meshv, f)
+e  = zeros(ComplexF64, nx)
+e .= compute_e(meshx, ρ)
+
+mod_e = Float64[]
+
+dt = tf / nt
+
+advection_x! = AmpereAdvection( meshx )
+advection_v! = AmpereAdvection( meshv );
+```
+
+
+```
+Main.ex-index.AmpereAdvection(Main.ex-index.UniformMesh(-6.0, 6.0, 256, 0.046875, [-6.0, -5.953125, -5.90625, -5.859375, -5.8125, -5.765625, -5.71875, -5.671875, -5.625, -5.578125  …  5.53125, 5.578125, 5.625, 5.671875, 5.71875, 5.765625, 5.8125, 5.859375, 5.90625, 5.953125]), [0.0, 0.5235987755982988, 1.0471975511965976, 1.5707963267948966, 2.0943951023931953, 2.617993877991494, 3.141592653589793, 3.665191429188092, 4.1887902047863905, 4.71238898038469  …  -5.235987755982988, -4.71238898038469, -4.1887902047863905, -3.665191429188092, -3.141592653589793, -2.617993877991494, -2.0943951023931953, -1.5707963267948966, -1.0471975511965976, -0.5235987755982988])
+```
+
+
+---
+
+
+```julia
+@showprogress 1 for i in 1:nt
+
+    advection_v!(fᵀ, e, 0.5dt)
+
+    transpose!(f, fᵀ)
+
+    advection_x!( f, e, v, dt)
+
+    push!(mod_e, log(sqrt((sum(e.^2))*meshx.step))) # diagnostic
+
+    transpose!(fᵀ, f)
+
+    advection_v!(fᵀ, e, 0.5dt)
+
+end
+```
+
+
+```
+Progress:   0%|▏                                        |  ETA: 0:19:18[KProgress:  23%|█████████▌                               |  ETA: 0:00:10[KProgress:  44%|██████████████████▏                      |  ETA: 0:00:05[KProgress:  66%|██████████████████████████▉              |  ETA: 0:00:03[KProgress:  87%|███████████████████████████████████▌     |  ETA: 0:00:01[KProgress: 100%|█████████████████████████████████████████| Time: 0:00:06[K
+```
+
+
+---
+
+
+```julia
+t = range(0, stop=tf, length=nt)
+plot(t, -0.1533*t.-5.48)
+plot!(t, mod_e , label=:ampere )
+savefig("mod_e.svg")
+```
+
+
+![](mod_e.svg)
+
+
+---
+
+
+*This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
+
+    </textarea>
+
+    <script src="remark.min.js" type="text/javascript"></script>
+    <script src="katex.min.js"></script>
+    <script src="auto-render.min.js"></script>
+    <link rel="stylesheet" href="katex.min.css">
+    <script type="text/javascript">
+        var options = {};
+        var renderMath = function() {
+        // renderMathInElement(document.body);
+        // or if you want to use $...$ for math,
+        renderMathInElement(document.body, {delimiters: [ // mind the order of delimiters(!?)
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false},
+            {left: "\\[", right: "\\]", display: true},
+            {left: "\\(", right: "\\)", display: false},
+        ]});
+        }
+
+        var slideshow = remark.create({}, renderMath);
+
+        </script>
+  </body>
+</html>
