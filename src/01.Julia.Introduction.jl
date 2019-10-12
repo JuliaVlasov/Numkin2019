@@ -118,6 +118,3 @@ plot!(sol.t, u, label = "Analytic")
 #md # ![](pendulum2.svg)
 
 @test true #src
-
-
-#md # ---

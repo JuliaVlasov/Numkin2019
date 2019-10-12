@@ -144,7 +144,4 @@ plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
 #md savefig("mod_e.svg"); nothing # hide
 #md # ![](mod_e.svg)
 
-#md # ---
-
 @test true #src
-
