@@ -67,6 +67,9 @@ efield_poisson = zeros(Float64, nx)
 
 maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 
+solve_poisson!( efield_poisson, particle_group, 
+                kernel_smoother0, maxwell_solver, rho)
+
 #md # ---
 
 # ### Charge density
@@ -74,7 +77,7 @@ maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 xg = LinRange(xmin, xmax, nx)
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, rho)
 plot( xg, sval, label="ρ")
-#md savefig("rho.svg")
+#md savefig("rho.svg"); nothing # hide
 
 #md # ![](rho.svg)
 
@@ -82,12 +85,9 @@ plot( xg, sval, label="ρ")
 
 # ### Electric field 
 
-solve_poisson!( efield_poisson, particle_group, 
-                kernel_smoother0, maxwell_solver, rho)
-
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
 plot( xg, sval )       
-#md savefig("ex.svg")
+#md savefig("ex.svg"); nothing # hide
 
 #md # ![](ex.svg)
 
@@ -138,10 +138,10 @@ end
 using DataFrames
 first(thdiag.data, 5)
 
-#md ---
+#md # ---
 
 plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
-#md savefig("mod_e.svg")
+#md savefig("mod_e.svg"); nothing # hide
 #md # ![](mod_e.svg)
 
 #md ---
