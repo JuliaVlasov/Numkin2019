@@ -172,9 +172,7 @@ savefig("mod_e.svg"); nothing # hide
 
 ![](mod_e.svg)
 
-```@example index
 ---
-```
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
