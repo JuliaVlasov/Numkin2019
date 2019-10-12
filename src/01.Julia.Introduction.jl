@@ -3,9 +3,13 @@ ENV["GKSwstype"]="100" #src
 #md # # Who am I ?
 #md #
 #md #  - My name is *Pierre Navaro*
+#md #
 #md #  - **Fortran 77 + PVM** : during my PhD 1998-2002 (Université du Havre) 
+#md #
 #md #  - **Fortran 90-2003 + OpenMP-MPI** : Engineer in Strasbourg (2003-2015) at IRMA
+#md #
 #md #  - **Numpy + Cython, R + Rcpp** : engineer in Rennes (2015-now) at IRMAR
+#md #
 #md #  - **Julia v1.0** since July 2018 
 
 #md # ---
