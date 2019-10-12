@@ -77,8 +77,7 @@ u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 scatter!(sol.t, u, label = "Analytic")
-#md savefig("pendulum1.svg")
-#md nothing # hide 
+#md savefig("pendulum1.svg"); nothing # hide 
 
 #md # ![](pendulum1.svg)
 
@@ -114,8 +113,7 @@ u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
-#md savefig("pendulum2.svg")
-#md nothing # hide 
+#md savefig("pendulum2.svg"); nothing # hide 
 
 #md # ![](pendulum2.svg)
 
