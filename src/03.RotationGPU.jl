@@ -50,6 +50,7 @@ function exact(time, mesh :: Mesh; shift=1.0)
 end
 
 #md # ---
+
 function animation( tf, nt)
     
     mesh = Mesh( -π, π, 64, -π, π, 64)
@@ -116,7 +117,7 @@ end
 
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
-rotation_on_cpu(mesh, 1, 0.1)
+rotation_on_cpu(mesh, 1, 0.1) # trigger building
 @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
 
 @test true #src
@@ -141,8 +142,7 @@ if GPU_ENABLED
 
     function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
         
-        dt = tf / nt
-        
+        dt  = tf / nt
         f   = zeros(ComplexF64,(mesh.nx, mesh.ny))
         f  .= exact( 0.0, mesh)
         
@@ -173,7 +173,6 @@ if GPU_ENABLED
         end
         
         f .= collect(d_f) # Transfer f from GPU to CPU
-        
         real(f)
         
     end
