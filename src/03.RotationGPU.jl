@@ -118,7 +118,8 @@ end
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
 rotation_on_cpu(mesh, 1, 0.1) # trigger building
-@time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
+etime = @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
+println(etime)
 
 @test true #src
 
@@ -185,8 +186,8 @@ if GPU_ENABLED
 
     nt, tf = 100, 20.
     rotation_on_gpu(mesh, 1, 0.1)
-    @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
-
+    etime = @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+    println(etime)
     @test true #src
 
 end

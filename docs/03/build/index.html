@@ -127,12 +127,6 @@ gif(anim, "rotation2d.gif", fps = 30)
 
 
 ```
-connect: Connexion refusée
-GKS: can't connect to GKS socket application
-Did you start 'gksqt'?
-
-GKS: Open failed in routine OPEN_WS
-GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
 ┌ Info: Saved animation to
 └   fn = "/home/pnavaro/Numkin2019/docs/03/build/rotation2d.gif"
 ```
@@ -188,12 +182,14 @@ rotation_on_cpu (generic function with 1 method)
 ```julia
 mesh = Mesh( -π, π, 1024, -π, π, 1024)
 nt, tf = 100, 20.
-rotation_on_cpu(mesh, 1, 0.1)
-@time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
+rotation_on_cpu(mesh, 1, 0.1) # trigger building
+etime = @time norm( rotation_on_cpu(mesh, nt, tf) .- exact( tf, mesh))
+println(etime)
 ```
 
 
 ```
+ 16.678453 seconds (29.16 k allocations: 81.857 MiB, 0.82% gc time)
 4.322852262251016e-12
 ```
 
@@ -229,8 +225,7 @@ if GPU_ENABLED
 
     function rotation_on_gpu( mesh :: Mesh, nt :: Int64, tf :: Float64)
 
-        dt = tf / nt
-
+        dt  = tf / nt
         f   = zeros(ComplexF64,(mesh.nx, mesh.ny))
         f  .= exact( 0.0, mesh)
 
@@ -261,7 +256,6 @@ if GPU_ENABLED
         end
 
         f .= collect(d_f) # Transfer f from GPU to CPU
-
         real(f)
 
     end
@@ -283,14 +277,15 @@ if GPU_ENABLED
 
     nt, tf = 100, 20.
     rotation_on_gpu(mesh, 1, 0.1)
-    @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
-
+    etime = @time norm( rotation_on_gpu(mesh, nt, tf) .- exact( tf, mesh))
+    println(etime)
 
 end
 ```
 
 
 ```
+  0.913979 seconds (16.35 k allocations: 192.780 MiB, 2.67% gc time)
 4.684258104699243e-12
 ```
 
