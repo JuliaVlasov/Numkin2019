@@ -6,3 +6,9 @@ deps/deps.jl
 Manifest.toml
 *.swp
 slides.jl
+docs/01/src/index.md
+docs/02/src/index.md
+docs/03/src/index.md
+docs/04/src/index.md
+docs/05/src/index.md
+docs/06/src/index.md
