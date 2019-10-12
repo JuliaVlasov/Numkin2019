@@ -74,11 +74,14 @@ kernel_smoother0 = ParticleMeshCoupling( domain, [nx], n_particles,
 
 Allocate electrostatic fields and Maxwell solver
 
-```@example index
+```@example index; continued = true
 rho = zeros(Float64, nx)
 efield_poisson = zeros(Float64, nx)
 
 maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
+
+solve_poisson!( efield_poisson, particle_group,
+                kernel_smoother0, maxwell_solver, rho)
 ```
 
 ---
@@ -89,7 +92,7 @@ maxwell_solver = Maxwell1DFEM(domain, nx, spline_degree)
 xg = LinRange(xmin, xmax, nx)
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, rho)
 plot( xg, sval, label="ρ")
-savefig("rho.svg")
+savefig("rho.svg"); nothing # hide
 ```
 
 ![](rho.svg)
@@ -99,12 +102,9 @@ savefig("rho.svg")
 ### Electric field
 
 ```@example index
-solve_poisson!( efield_poisson, particle_group,
-                kernel_smoother0, maxwell_solver, rho)
-
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
 plot( xg, sval )
-savefig("ex.svg")
+savefig("ex.svg"); nothing # hide
 ```
 
 ![](ex.svg)
@@ -161,11 +161,13 @@ end
 ```@example index
 using DataFrames
 first(thdiag.data, 5)
+```
 
 ---
 
+```@example index
 plot(thdiag.data[!,:Time], log.(thdiag.data[!,:PotentialEnergyE1]))
-savefig("mod_e.svg")
+savefig("mod_e.svg"); nothing # hide
 ```
 
 ![](mod_e.svg)
