@@ -1,14 +1,14 @@
 ENV["GKSwstype"]="100" #src
 
 # ## 1D1V Vlasov–Ampere system
-#
-# ```math
-# \\frac{\\partial f}{\\partial t} + \\upsilon \\frac{\\partial f}{\\partial x} - E(t,x) \\frac{\\partial f}{\\partial \\upsilon} = 0
-# ```
-#
-# ```math
-# \\frac{\\partial E}{\\partial t} = - J = \\displaystyle \\int  f\\upsilon \\; d\\upsilon
-# ```
+#md #
+#md # ```math
+#md # \\frac{\\partial f}{\\partial t} + \\upsilon \\frac{\\partial f}{\\partial x} - E(t,x) \\frac{\\partial f}{\\partial \\upsilon} = 0
+#md # ```
+#md #
+#md # ```math
+#md # \\frac{\\partial E}{\\partial t} = - J = \\displaystyle \\int  f\\upsilon \\; d\\upsilon
+#md # ```
 
 #md # ---
 
@@ -150,11 +150,11 @@ end
 #md # ----
 #
 # ## Initial distribution function
-#
-# ```math
-# f(x,v) = \\frac{1}{\\sqrt{2\\pi}}(1+ ϵ \\cdot cos(k_x x)) e^{-v^2/2}
-# ```
-#
+#md #
+#md # ```math
+#md # f(x,v) = \\frac{1}{\\sqrt{2\\pi}}(1+ ϵ \\cdot cos(k_x x)) e^{-v^2/2}
+#md # ```
+#md #
 """
     landau( ϵ, kx, x, v )
 
@@ -196,7 +196,7 @@ f .= landau( ϵ, kx, x, v)
 
 #md # ---
 
-#nb Plot the distribution
+#nb # Plot the distribution
 
 #nb surface( x, v, real(f))
 
