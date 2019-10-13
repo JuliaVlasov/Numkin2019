@@ -7,12 +7,12 @@ ENV["GKSwstype"]="100" #src
 using Plots, BenchmarkTools, FFTW, LinearAlgebra
 
 # ### Advection equation for a rotation in two dimensional domain
-#
-# ```math
-#  \\frac{d f}{dt} +  (y \\frac{d f}{dx} - x \\frac{d f}{dy}) = 0
-# ```
-#
-# ``x \in [-π, π], y \in [-π, π] `` and  `` t \in [0, 200π] ``
+#md #
+#md # ```math
+#md #  \\frac{d f}{dt} +  (y \\frac{d f}{dx} - x \\frac{d f}{dy}) = 0
+#md # ```
+#md #
+#md # ``x \in [-π, π], y \in [-π, π] `` and  `` t \in [0, 200π] ``
 
 #md # ---
 
