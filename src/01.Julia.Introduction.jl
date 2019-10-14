@@ -11,6 +11,11 @@ ENV["GKSwstype"]="100" #src
 #md #  - **Numpy + Cython, R + Rcpp** : Engineer in Rennes (2015-now) at IRMAR
 #md #
 #md #  - **Julia v1.0** since July 2018 
+#md #
+#md #  ## Instructions to open the notebooks
+#md #
+#md #  https://github.com/JuliaVlasov/Numkin2019
+#md #
 
 #md # ---
 
