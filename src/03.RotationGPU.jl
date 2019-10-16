@@ -1,5 +1,3 @@
-ENV["GKSwstype"]="100" #src
-
 # ## GPU Computing
 
 # https://github.com/JuliaGPU
