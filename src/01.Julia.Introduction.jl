@@ -128,4 +128,4 @@ plot!(sol.t, u, label = "Analytic")
 
 @test true #src
 
-#md #  Next: [Vlasov-Ampere with FFT](/02/build/index.html)
+#md #  Next: [Vlasov-Ampere with FFT](/Numkin2019/02/build/index.html)
