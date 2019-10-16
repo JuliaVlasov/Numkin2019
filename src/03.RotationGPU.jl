@@ -76,7 +76,7 @@ end
 #md # ---
 
 anim = animation( 2π, 100)
-#md gif(anim, "rotation2d.gif", fps = 30)
+#md gif(anim, "rotation2d.gif", fps = 20)
 #md nothing # hide
 
 #md # ![](rotation2d.gif)
@@ -191,3 +191,5 @@ if GPU_ENABLED
     @test true #src
 
 end
+
+#md # Next: [Metaprogrammimg and Particle Group](/04/build/index.html)

@@ -125,17 +125,6 @@ scatter!(sol.t, u, label = "Analytic")
 ```
 
 
-```
-gksqt: cannot connect to X server
-connect: Connexion refusée
-GKS: can't connect to GKS socket application
-Did you start 'gksqt'?
-
-GKS: Open failed in routine OPEN_WS
-GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
-```
-
-
 ![](pendulum1.svg)
 
 
@@ -179,17 +168,6 @@ u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
 plot!(sol.t, u, label = "Analytic")
-```
-
-
-```
-gksqt: cannot connect to X server
-connect: Connexion refusée
-GKS: can't connect to GKS socket application
-Did you start 'gksqt'?
-
-GKS: Open failed in routine OPEN_WS
-GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
 ```
 
 

@@ -243,3 +243,5 @@ plot!(t, mod_e , label=:ampere )
 @test true #src
 
 #md # ![](mod_e.svg)
+
+#md # Next: [Rotation on GPU](/03/build/index.html)

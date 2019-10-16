@@ -127,3 +127,5 @@ plot!(sol.t, u, label = "Analytic")
 #md # ![](pendulum2.svg)
 
 @test true #src
+
+#md #  Next: [Vlasov-Ampere with FFT](/02/build/index.html)
