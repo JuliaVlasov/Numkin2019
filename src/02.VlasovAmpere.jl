@@ -244,4 +244,4 @@ plot!(t, mod_e , label=:ampere )
 
 #md # ![](mod_e.svg)
 
-#md # Next: [Rotation on GPU](/03/build/index.html)
+#md # Next: [Rotation on GPU](/Numkin2019/03/build/index.html)
