@@ -114,7 +114,7 @@ thdiag = TimeHistoryDiagnostics( particle_group, maxwell_solver,
 
 # ## Loop over time
 
-steps, Δt = 100, 0.05
+steps, Δt = 500, 0.05
 
 @showprogress 1 for j = 1:steps # loop over time
 
