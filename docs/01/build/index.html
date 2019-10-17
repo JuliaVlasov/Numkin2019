@@ -53,13 +53,13 @@ https://github.com/JuliaVlasov/Numkin2019
 # Julia's Engineering and Design Tradoffs
 
 
-  * Type structures cannot bechanges after created (less dynamism but memory layout can be optimized for)
+  * Type structures cannot be changed after being created (less dynamism but memory layout can be optimized for)
   * All functions are JIT compiled via LLVM (interactive lags but massive runtime improvements)
   * All functions specialize on types of arguments (more compilation but give generic programming structures)
   * Julia is interactive (use it like Python and R, but makes it harder to get binaries)
-  * Julia has great methods for handling mutation (more optimization opportunities like C/Fortran, but more cognative burden)
+  * Julia has great methods for handling mutation (more optimization opportunities like C/Fortran, but more cognitive burden)
   * Julia's Base library and most packages are written in Julia, (you can understand the source, but learn a new package)
-  * Julia has expensive tooling for code generation and metaprogramming (consise and more optimizations, but some codes can be for experienced users)
+  * Julia has expensive tooling for code generation and metaprogramming (concise and more optimizations, but some codes can be for experienced users)
 
 
 To me, this gives me a language with a lot of depth which works well for computationally-expensive scientific applications.
@@ -121,7 +121,7 @@ Analytic solution
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
-scatter!(sol.t, u, label = "Analytic")
+plot!(sol.t, u, label = "Analytic")
 ```
 
 
