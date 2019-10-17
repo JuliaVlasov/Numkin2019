@@ -33,13 +33,13 @@ ENV["GKSwstype"]="100" #src
 
 #md # # Julia's Engineering and Design Tradoffs
 #md #
-#md # - Type structures cannot bechanges after created (less dynamism but memory layout can be optimized for)
+#md # - Type structures cannot be changed after being created (less dynamism but memory layout can be optimized for)
 #md # - All functions are JIT compiled via LLVM (interactive lags but massive runtime improvements)
 #md # - All functions specialize on types of arguments (more compilation but give generic programming structures)
 #md # - Julia is interactive (use it like Python and R, but makes it harder to get binaries)
-#md # - Julia has great methods for handling mutation (more optimization opportunities like C/Fortran, but more cognative burden)
+#md # - Julia has great methods for handling mutation (more optimization opportunities like C/Fortran, but more cognitive burden)
 #md # - Julia's Base library and most packages are written in Julia, (you can understand the source, but learn a new package)
-#md # - Julia has expensive tooling for code generation and metaprogramming (consise and more optimizations, but some codes can be for experienced users)
+#md # - Julia has expensive tooling for code generation and metaprogramming (concise and more optimizations, but some codes can be for experienced users)
 #md #
 #md # To me, this gives me a language with a lot of depth which works well for computationally-expensive scientific applications.
 #md #
@@ -85,7 +85,7 @@ sol = solve(prob, Tsit5(), reltol = 1e-6)
 u = u₀[2] .* cos.(sqrt(g / L) .* sol.t)
 
 plot(sol.t, getindex.(sol.u, 2), label = "Numerical")
-scatter!(sol.t, u, label = "Analytic")
+plot!(sol.t, u, label = "Analytic")
 #md savefig("pendulum1.svg"); nothing # hide 
 
 #md # ![](pendulum1.svg)
