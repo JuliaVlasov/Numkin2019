@@ -16,7 +16,7 @@ ENV["GKSwstype"]="100" #src
 
 using Pkg
 
-Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"))
+Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"));
 
 using ProgressMeter, Plots, GEMPIC
 
@@ -86,7 +86,7 @@ plot( xg, sval, label="ρ")
 # ### Electric field 
 
 sval = eval_uniform_periodic_spline_curve(spline_degree-1, efield_poisson)
-plot( xg, sval )       
+plot( xg, sval, label="efield")       
 #md savefig("ex.svg"); nothing # hide
 
 #md # ![](ex.svg)
@@ -131,6 +131,7 @@ steps, Δt = 500, 0.05
 
 end
 
+#md nothing # hide
 #md # ---
 
 # ## Diagnostics stored in a dataframe
