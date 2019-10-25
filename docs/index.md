@@ -1,3 +1,8 @@
+---
+layout: post
+title:  "Numrical Methods for the Kinetic Equations of Plasma Physics"
+---
+
 ## Solving the Vlasov equation with Julia
 
 The Vlasov equation is of fundamental importance in plasma physics
