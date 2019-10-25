@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Numrical Methods for the Kinetic Equations of Plasma Physics"
+title:  Solving the Vlasov equation with Julia
 ---
 
-## Solving the Vlasov equation with Julia
+*Numerical Methods for the Kinetic Equations of Plasma Physics*, Garching Oct 14-18, 2019.
 
 The Vlasov equation is of fundamental importance in plasma physics
 and particularly for simulations in Magnetic fusion and of Tokamak
