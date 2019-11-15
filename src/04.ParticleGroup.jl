@@ -13,7 +13,7 @@ using Plots, LinearAlgebra
 # - `V` : number of dimension in phase space
 # - `n` : number of particles
 # 
-mutable struct ParticleGroup{D,V}
+struct ParticleGroup{D,V}
 
     n_particles       :: Int64
     data              :: Array{Float64, 2}
