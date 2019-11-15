@@ -1,12 +1,9 @@
 import Remark
 using Literate
-
 ENV["GKSwstype"]="100"
 using Plots
 
 files =  filter( f -> startswith(f, "0"), readdir("src")) |> collect
-
-# run(pipeline(`cat src/$files`; stdout="slides.jl" ))
 
 for file in files
     Literate.notebook("src/$file", "notebooks",  execute=true)
