@@ -98,7 +98,7 @@ end
 #md # - There is a MPI and PETSc package but they are not very active. 
 #md # - For parallelization, The Julia community seems to prefer the ditributed processing approach. 
 #md # - Does not work well with vectorized code, you need to do a lot of inplace computation to avoid memory allocations and use explicit views to avoid copy.
-#md # - Julia website proclaims that it is faster than Fortran but this is not true.
+#md # - Julia website proclaims that it is faster than Fortran but this is not true. But it is very close and it is progressing.
 #md 
 #md # [What's Bad About Julia by Jeff Bezanson](https://www.youtube.com/watch?v=TPuJsgyu87U)
 
