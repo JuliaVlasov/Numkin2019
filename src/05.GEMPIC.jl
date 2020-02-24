@@ -16,7 +16,7 @@ ENV["GKSwstype"]="100" #src
 
 using Pkg
 
-Pkg.add(PackageSpec(url="https://github.com/juliavlasov/GEMPIC.jl"));
+Pkg.add("GEMPIC");
 
 using ProgressMeter, Plots, GEMPIC
 
